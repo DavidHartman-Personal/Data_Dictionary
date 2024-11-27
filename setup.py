@@ -11,7 +11,7 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='sample',
+    name='data_dictionary',
     version='0.1.0',
     description='David Hartman Python Template',
     long_description=readme,

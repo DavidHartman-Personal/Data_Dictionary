@@ -209,7 +209,7 @@ latex_elements = {
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'sample', u'sample Documentation',
+    ('index', 'data_dictionary', u'data_dictionary Documentation',
      [u'David Hartman'], 1)
 ]
 
@@ -223,8 +223,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'sample', u'sample Documentation',
-   u'David Hartman', 'sample', 'One line description of project.',
+  ('index', 'data_dictionary', u'data_dictionary Documentation',
+   u'David Hartman', 'data_dictionary', 'One line description of project.',
    'Miscellaneous'),
 ]
 
