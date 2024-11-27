@@ -1,9 +1,65 @@
-David Hartman's Python Template
-===============================
+# Data Dictionary
 
-A Python Template Repository used to do create github repositories.
+A Data Dictionary data class set of resources and code.
 
-See my confluence wiki, [Organizing Python Resources](https://davidhartman.atlassian.net/wiki/spaces/PYTHON/pages/196629) for more details.
+## Class Definitions
+
+### Class - DataDictionary 
+
+Contains a complete data dictionary including a description as well as an array of Entity class objects. 
+
+#### DataDictionary - Properties
+
+* name (string) - A name for the data dictionary
+* description (string) - A description of the data dictionary
+* subject_area (string) - The subject area name for the entity (e.g. Master Data, Orders, etc.)
+* environment_name (string) - An optional property that describes that environment, business area, business process, application, etc. where the entity is defined. 
+* entities (List<Entity>) - An array of Entity objects (See Entity definition below).  A Data Dictionary can be initialized with a set of entities already created.
+
+#### DataDictionary - Methods
+
+* __init__ -> self (class method): Initialize the Data Dictionary class
+* add_entity(self, Entity) -> None: Adds a single Entity object to the Data Dictionary
+* remove_entity(self, Entity) -> None: Remove an entity from the data dictionary
+* get_entity(self, Entity.name) -> Entity: Gets an entity from the Data dictionary
+
+### Class - Entity
+
+A class that defines and logical data model entity or a physical model table along with an array of Attribute objects.
+
+#### Entity - Properties
+
+* entity_name (string) - The name of the entity or table
+* entity_description (string) - A description of the entity
+* subject_area (string) - The subject area name for the entity (e.g. Master Data, Orders, etc.)
+* environment_name (string) - An optional property that describes that environment, business area, business process, application, etc. where the entity is defined. 
+* attributes (UserDict<Attribute>) - A dictionary containing Attribute objects (See Attribute definition below) with the attribute name as the key
+
+#### Entity - Methods
+
+* __init__ -> self (@classmethod): Initialize the class
+* entity_from_csv -> self (@classmethod): Creates an entity from a csv value
+* add_attribute(key, Attribute) -> None: Adds an attribute object
+* get_attribute(key) -> Attribute: If key exists, returns the attribute
+* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary 
+
+### Class - Attribute
+
+Attribute/Field definition for an Entity based on a UserDict base class
+
+#### Attribute - Properties
+
+* attribute_name (string) - The name of the attribute or column
+* format (string) - optional: specific format or mask for the attribute
+* attribute_type (string) - The data type of the attribute
+* description (string) - A description of the entity
+
+#### Attribute - Methods
+
+* __init__(String attribute_name) -> self (@classmethod): Initialize the class
+* add_attribute(key, Attribute) -> None: Adds an attribute object
+* get_attribute(key) -> Attribute: If key exists, returns the attribute
+* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary 
 
 ## To Do Items to Update this Python Template
 
@@ -37,6 +93,9 @@ Notice that the summary and the elaboration is separated by a blank new
 line.
 """
 ```
+
+See my confluence wiki, [Organizing Python Resources](https://davidhartman.atlassian.net/wiki/spaces/PYTHON/pages/196629) for more details.
+
 
 #### Class Comment Block
 
