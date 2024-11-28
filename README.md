@@ -2,6 +2,30 @@
 
 A Data Dictionary data class set of resources and code.
 
+
+```mermaid
+---
+title: Master Data - Organization
+---
+erDiagram
+    ENTERPRISE ||--o{ ORGANIZATION : places
+    ENTERPRISE {
+        int SYS_ENT_ID
+    }
+    ORGANIZATION {
+        int SYS_ENT_ID
+        string deliveryAddress
+    }
+    ENTERPRISE	{
+      string OMS_EXTERNAL_INVOICE_SYSTEM
+      int OMS_SYS_VANENTERPRISE_ID
+      int SYS_CREATION_TEMPLATE_ID
+      int	SYS_HIFI_SCENARIO_ID
+      int	SYS_ENT_ID
+      string APPT_SCHEDULING_SYSTEM
+    }
+```
+
 ## Class Definitions
 
 ### Class - DataDictionary 

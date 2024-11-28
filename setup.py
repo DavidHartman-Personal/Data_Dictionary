@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from setuptools import setup, find_packages
 
 
@@ -13,10 +12,10 @@ with open('LICENSE') as f:
 setup(
     name='data_dictionary',
     version='0.1.0',
-    description='David Hartman Python Template',
+    description='Data Dictionary',
     long_description=readme,
     author='David Hartman',
-    author_email='dhartman@challengetaker.com',
+    author_email='dhartman@it2solutions.com',
     url='TBD',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))

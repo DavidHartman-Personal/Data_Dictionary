@@ -7,7 +7,8 @@ This script will open an Excel Workbook and then show some details about the wor
 import argparse
 import configparser
 import os
-import excel_workbook
+# import excel_workbook
+from excel_workbook.excel_workbook import ExcelWorkbook
 import logging
 import coloredlogs
 
@@ -21,7 +22,7 @@ CONF_DIR = os.path.join(PROJECT_ROOT_DIR, 'conf')
 DATA_DIR = os.path.join(PROJECT_ROOT_DIR, 'data')
 
 #: Directory were data files/extracts/reports will be stored
-EXCEL_FILE_DIR = os.path.join(PROJECT_ROOT_DIR, 'excel_files')
+EXCEL_FILE_DIR = os.path.join(PROJECT_ROOT_DIR, 'input_files')
 
 #: Configuration file path.  Uses environment variable if none is defined.
 FILENAME_INPUT_CONFIG = os.environ.get('CONFIG_FILE_PATH',
@@ -40,7 +41,7 @@ def main():
     """The main method for this script.
 
     """
-    source_spreadsheet_name = "sample.xlsx"
+    source_spreadsheet_name = "po_sample.xlsx"
     source_spreadsheet_file = os.path.join(EXCEL_FILE_DIR, source_spreadsheet_name)
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -62,7 +63,7 @@ def main():
     first_col = config.get('data_dictionary', 'first_col',fallback=DEFAULT_FIRST_COL)
     last_col = config.get('data_dictionary', 'last_col',fallback=DEFAULT_LAST_COL)
     logging.info("Getting excel info header row:[%s], first col [%s], last col [%s]", header_row,first_col,last_col)
-    excel_wb = excel_workbook.ExcelWorkbook(source_spreadsheet_file)
+    excel_wb = ExcelWorkbook(source_spreadsheet_file)
     excel_ws = excel_wb.get_worksheets()
     for ws in excel_ws:
         print(str(ws))
