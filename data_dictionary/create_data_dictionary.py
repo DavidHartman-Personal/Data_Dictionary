@@ -1,14 +1,14 @@
-"""Read and Show Excel workbook details
+"""Create a data dictionary object from an Excel Workbook that contains data/details.
 
-This script will open an Excel Workbook and then show some details about the workbook.  It uses configuration files, and references the data/ directory.
+This script data from an Excel workbook to create a data dictionary object.
 
 """
 
 import argparse
 import configparser
 import os
-# import excel_workbook
 from excel_workbook.excel_workbook import ExcelWorkbook
+from model.DataDictionary import DataDictionaryData, EntityData, AttributeData
 import logging
 import coloredlogs
 
@@ -43,35 +43,23 @@ def main():
     """
     source_spreadsheet_name = "po_sample.xlsx"
     source_spreadsheet_file = os.path.join(EXCEL_FILE_DIR, source_spreadsheet_name)
+    def process_args():
+        logging.info("Processing command line Arguments")
+    config_filename = process_args()
+    def get_configs(config_filename):
+        logging.info("Getting config file values")
 
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('input_file',type=str,help="The spreadsheet file to print the columns of",
-                        nargs='?',default=source_spreadsheet_file)
-    parser.add_argument('--config', '-c', dest='filename_config', action='store', default=FILENAME_INPUT_CONFIG,
-                        help='Config file for generating AWS User Access Report - Default is Environment variable CONFIG_FILE_PATH')
-    args=parser.parse_args()
-    config = configparser.ConfigParser()
-    logging.info("Reading config file [%s]", args.filename_config)
-    # Confirm config file exists before reading
-    try:
-        with open(args.filename_config) as f:
-            config.read(args.filename_config)
-    except Exception as e:
-        logging.error("Error Reading config file [%s]: [%s]", args.filename_config, str(e))
-        raise ValueError("Error Reading config file [%s]: [%s]", args.filename_config, str(e))
-    header_row = config.get('data_dictionary', 'header_row', fallback=DEFAULT_HEADER_ROW)
-    first_col = config.get('data_dictionary', 'first_col',fallback=DEFAULT_FIRST_COL)
-    last_col = config.get('data_dictionary', 'last_col',fallback=DEFAULT_LAST_COL)
-    logging.info("Getting excel info header row:[%s], first col [%s], last col [%s]", header_row,first_col,last_col)
+    (header_row, first_col, last_col) = get_configs(config_filename)
+    logging.info("Creating ExcelWorkbook [%s]", source_spreadsheet_file)
     excel_wb = ExcelWorkbook(source_spreadsheet_file)
     excel_ws = excel_wb.get_worksheets()
+    logging.info("Getting excel info header row:[%s], first col [%s], last col [%s]", header_row,first_col,last_col)
     for ws in excel_ws:
+        logging.info("Getting Workshet [%s]", str(ws))
         print(str(ws))
     # open_poam_ws = poam_wb[in_open_poam_worksheet_name]
     # For a worksheet, get the table data to create the data dictionary object
-
     # get_spreadsheet_cols(args.input_file, print_cols=True)
-
 
 if __name__ == "__main__":
     main()
