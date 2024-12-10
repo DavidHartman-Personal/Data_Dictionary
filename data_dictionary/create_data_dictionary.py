@@ -8,7 +8,7 @@ import argparse
 import configparser
 import os
 from excel_workbook.excel_workbook import ExcelWorkbook
-from model.DataDictionary import DataDictionaryData, EntityData, AttributeData
+from model.DataDictionaryData import DataDictionaryData, EntityData, AttributeData
 import logging
 import coloredlogs
 

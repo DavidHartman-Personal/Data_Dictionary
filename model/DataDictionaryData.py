@@ -1,6 +1,7 @@
-"""This is the main Excel Workbook class
+"""A Data Dictionary contains details regarding data withing a Business, Application, Process, etc.
 
-Creates an Excel workbook class object.
+A Data Dictionary object contains detailed information regarding data that is created and managed in support of any process (Business, Application, etc.)
+The information captured for the data includes details regarding format, relationships to other data/information, lineage, lifecycle, etc.
 
     Attributes:
             workbook_filename (str): The full filename path to the Excel workbook
@@ -21,7 +22,7 @@ import sys
 from openpyxl import load_workbook
 import coloredlogs
 from pprint import pp
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 #: This effectively defines the root of this project and so adding ..\, etc is not needed in config files
@@ -47,18 +48,38 @@ coloredlogs.install(level=logging.INFO,
 
 @dataclass
 class AttributeData:
+    """An Attribute contains details about a data attribute/column including data type information.
+
+    An Attribute contains details about a data attribute typically associated with entities.  The information generally includes details
+    related to data type, masks and relationships to other data elements (e.g. parent-child, pk, fk, etc.).
+
+    Args:
+        name (str): A name for the data attribute.
+        description (str): A description for the data attribute.
+        subject_area (str): A subject area for the data attribute.
+        environment (str): A environment for the data attribute.
+
+    """
     name: str
     description: str
     subject_area: str
     environment: str
 
+
 @dataclass
 class EntityData:
+    """Describes a basic data entity object.  An entity contains Attributes/Fields/Columns as well
+
+    This class contains details about entities that are defined for a particular process/application/etc.
+    and are generally included as part of DataDictionary.
+
+    """
     name: str
     description: str
     subject_area: str
     environment: str
-    entities: List[AttributeData]
+    entities: List[AttributeData] = field(default_factory=list)
+
 
 @dataclass
 class DataDictionaryData:
@@ -66,5 +87,4 @@ class DataDictionaryData:
     description: str
     subject_area: str
     environment: str
-    entities: List[EntityData]
-
+    entities: List[EntityData] = field(default_factory=list)

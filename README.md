@@ -4,6 +4,8 @@ A Data Dictionary data class set of resources and code.
 
 ## Process Flow
 
+
+
 ### Processing an Excel Data Dictionary Template
 
 The below describes the process for reading in an Excel file containing Data Dictionary information and extracting the details to create Data Dictionary related objects (DataDictionary, Entities, Attributes)
@@ -11,6 +13,7 @@ The below describes the process for reading in an Excel file containing Data Dic
 The `create_data_dictionary.py` script is designed to create a data dictionary object from an Excel workbook. Here's a breakdown of the script:
 
 <!-- file: C:\Users\DHARTMAN\Documents\Programming\PycharmProjects\Data_Dictionary\data_dictionary\create_data_dictionary.py -->
+
 ```python
 """Create a data dictionary object from an Excel Workbook that contains data/details.
 
@@ -22,7 +25,7 @@ import argparse
 import configparser
 import os
 from excel_workbook.excel_workbook import ExcelWorkbook
-from model.DataDictionary import DataDictionaryData, EntityData, AttributeData
+from model.DataDictionaryData import DataDictionaryData, EntityData, AttributeData
 import logging
 import coloredlogs
 
@@ -55,64 +58,6 @@ EXCEL_FILE_DIR = os.path.join(PROJECT_ROOT_DIR, 'input_files')
 
 The script lays out the foundation for interacting with an Excel workbook to extract and organize data into structured objects representing a data dictionary, though some implementation details, particularly the creation and manipulation of data objects, aren't fully shown in the provided snippet.
 
-
-```plantuml
-@startuml
-start
-:Let entSet be a set revoke;
-:stackPools = filter that
-have stacking_id attribute;
-partition for-each-entSet {
-:stackPool = find stack pool  
-for entitlement;
-:Update stackPool based on sSet;
-}
-:virtEnts = filter Entitlements from entSet that 
-have virt_limit and are for distributors;
-partition for-each-virtEnts {
-if (virt_limit == unlimited) then
--> YES;
-:Set to -1;
-else
--> NO;
-:Add quantity;
-endif
-}
-:Compute compliance status for all 
-Consumers that have an entitlement in entSet;
-stop
-@enduml
-```
-
-```plantuml
-@startuml
-
-start
-
-:Open and Read Layout Configuration XML;
-
-repeat
-  :**Read Process**;
-  repeat
-  :**Read Thread**;
-  note: at least one should be there, the main thread
-    repeat
-      :**Read Component**;
-      repeat
-        : **Read Interface**;
-      repeat while(interfaces?)
-      : **Generate Interfaces Code**;
-    repeat while(components?)
-  : **Generate Components Code**;
-  repeat while(threads?)
-  : **Generate Threads Code**;
-repeat while(processes?)
-:**Generate Processes Code**;
-
-stop
-
-@enduml
-```
 
 ## Project Organization
 
@@ -208,8 +153,7 @@ Project Organization - Data Dictionary
 ```
 
 
-```plantuml
-@startjson
+```@startjson
 {
   "Field Name": {
     "0": "Action Name",
@@ -277,7 +221,8 @@ Project Organization - Data Dictionary
     "2": "description 2"
   }
 }
-@endjson
+@endjsonplantuml
+
 ```
 
 ## Class: ExcelWorkbook

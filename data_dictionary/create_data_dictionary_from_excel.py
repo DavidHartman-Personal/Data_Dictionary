@@ -14,7 +14,8 @@ from data_dictionary import constants
 from openpyxl import load_workbook
 import pandas as pd
 import json
-import pprint
+import pprint as pp
+from model import DataDictionaryData as dd
 
 coloredlogs.install(level=logging.DEBUG,
                     fmt="%(asctime)s %(hostname)s %(name)s %(filename)s line-%(lineno)d %(levelname)s - %(message)s",
@@ -134,18 +135,27 @@ def main():
         source_worksheet_name_out = config.get('po_sample', 'source_worksheet_name')
         return header_row_out, first_col_out, last_col_out, source_file_name_out, source_worksheet_name_out
     (header_row, first_col, last_col, source_spreadsheet_file, source_worksheet_name) = get_configs(config_filename)
+    data_dict = dd.DataDictionaryData(name="USAID_Data_Dictionary",
+                                      description="USAID Data Dictionary for One Network system",
+                                      subject_area="All",
+                                      environment="All"
+    )
+
     test_spreadsheet = "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
-    logging.info("Creating ExcelWorkbook [%s]", test_spreadsheet)
+    logging.info("Creating ExcelWorkbook Object [%s]", test_spreadsheet)
     # poib_table_data = get_all_tables(filename=test_spreadsheet)
     # # for row in dataframe_to_rows(df, index=True, header=True):
     # #     ws.append(row)  # appends this row after a previous one
     #
     # print(str(poib_table_data))
     excel_poib_data = pd.read_excel(test_spreadsheet, sheet_name="PurchaseOrder_IB")
+
     excel_poib_json_data = pd.read_excel(test_spreadsheet, sheet_name="PurchaseOrder_IB").to_json()
     json_out = json.dumps(excel_poib_json_data, indent=4)
     #print("JSON" + str(json_out))
-    print("JSON: " + str(excel_poib_json_data))
+    pp.pprint(excel_poib_data.info())
+
+    pp.pprint(excel_poib_json_data)
     json_output_file = os.path.join(constants.OUTPUT_DIR, 'sample_po.json')
     with open(json_output_file, mode="w", encoding="utf-8") as write_file:
         write_file.write(str(excel_poib_json_data))
