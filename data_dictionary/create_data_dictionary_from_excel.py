@@ -15,22 +15,25 @@ from openpyxl import load_workbook
 import pandas as pd
 import json
 import pprint as pp
-from model import DataDictionaryData as dd
+from model import DataDictionary as dd
+from pathlib import Path
+import numpy as np
 
 coloredlogs.install(level=logging.DEBUG,
                     fmt="%(asctime)s %(hostname)s %(name)s %(filename)s line-%(lineno)d %(levelname)s - %(message)s",
                     datefmt='%H:%M:%S')
 
-def create_data_dictionary():
-    """Create a Data Dictionary
-
-        """
-    source_spreadsheet_name = "po_sample.xlsx"
-    source_spreadsheet_file = os.path.join(constants.EXCEL_FILE_DIR, source_spreadsheet_name)
 
 def get_all_tables(filename):
     """ Get all tables from a given workbook. Returns a dictionary of tables.
-        Requires a filename, which includes the file path and filename. """
+        Requires a filename, which includes the file path and filename.
+
+    Args:
+        filename (str): The Excel filename
+
+    Returns:
+        object:
+    """
 
     # Load the workbook, from the filename, setting read_only to False
     wb = load_workbook(filename=filename, read_only=False, keep_vba=False, data_only=True, keep_links=False)
@@ -79,15 +82,19 @@ def get_all_tables(filename):
 
     return tables_dict
 
+
 def read_excel_table(sheet, table_name):
     """
     This function will read an Excel table
     and return a tuple of columns and data
 
     This function assumes that tables have column headers
-    :param sheet: the sheet
-    :param table_name: the name of the table
-    :return: columns (list) and data (dict)
+    Args:
+      sheet (worksheet): The worksheet name
+      table_name (str): The table name
+
+    Returns:
+      columns, data: Arrays of the columns and the data.
     """
     table = sheet.tables[table_name]
     table_range = table.ref
@@ -105,20 +112,25 @@ def read_excel_table(sheet, table_name):
 
     return columns, data
 
+
 def main():
     """The main method for this script.
 
     """
+
     def process_args():
         logging.info("Processing command line Arguments")
         parser = argparse.ArgumentParser(description=__doc__)
         parser.add_argument('input_file', type=str, help="The spreadsheet file to print the columns of",
                             nargs='?', default=constants.DEFAULT_SPREADSHEET)
-        parser.add_argument('--config', '-c', dest='filename_config', action='store', default=constants.FILENAME_INPUT_CONFIG,
+        parser.add_argument('--config', '-c', dest='filename_config', action='store',
+                            default=constants.FILENAME_INPUT_CONFIG,
                             help='Config file for generating AWS User Access Report - Default is Environment variable CONFIG_FILE_PATH')
         args = parser.parse_args()
         return args.filename_config
+
     config_filename = process_args()
+
     def get_configs(config_filename_in):
         logging.info("Getting config file values from [%s]", str(config_filename_in))
         config = configparser.ConfigParser()
@@ -134,52 +146,42 @@ def main():
         source_file_name_out = config.get('po_sample', 'source_file_name', fallback=constants.DEFAULT_SPREADSHEET)
         source_worksheet_name_out = config.get('po_sample', 'source_worksheet_name')
         return header_row_out, first_col_out, last_col_out, source_file_name_out, source_worksheet_name_out
+
     (header_row, first_col, last_col, source_spreadsheet_file, source_worksheet_name) = get_configs(config_filename)
-    data_dict = dd.DataDictionaryData(name="USAID_Data_Dictionary",
-                                      description="USAID Data Dictionary for One Network system",
-                                      subject_area="All",
-                                      environment="All"
-    )
-
-    test_spreadsheet = "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
+    source_input_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
+    output_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
+    input_file_name = "po_sample.xlsx"
+    output_file_name = "data_dictionary.json"
+    test_spreadsheet = source_input_filepath / input_file_name
+    dd_output_file = output_filepath / output_file_name
+    data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
+                                  description="USAID Data Dictionary for One Network system",
+                                  subject_area="All",
+                                  environment="All",
+                                  source_filename=test_spreadsheet
+                                  )
     logging.info("Creating ExcelWorkbook Object [%s]", test_spreadsheet)
-    # poib_table_data = get_all_tables(filename=test_spreadsheet)
-    # # for row in dataframe_to_rows(df, index=True, header=True):
-    # #     ws.append(row)  # appends this row after a previous one
-    #
-    # print(str(poib_table_data))
-    excel_poib_data = pd.read_excel(test_spreadsheet, sheet_name="PurchaseOrder_IB")
+    excel_poib_data = pd.read_excel(test_spreadsheet,
+                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
+        np.nan, None)
+    entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+                       description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+                       subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+                       environment=constants.SOURCE_DATA_DICT_MAPPING['environment']
+                       )
+    for row_label, row in excel_poib_data.iterrows():
+        entity_attribute = dd.Attribute(
+            name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
+            description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
+            data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
+            subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+            environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
+            max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']],
+        )
+        entity.add_attribute(entity_attribute)
+    data_dict.add_entity(entity)
+    data_dict.write_data_dictionary(dd_output_file)
 
-    excel_poib_json_data = pd.read_excel(test_spreadsheet, sheet_name="PurchaseOrder_IB").to_json()
-    json_out = json.dumps(excel_poib_json_data, indent=4)
-    #print("JSON" + str(json_out))
-    pp.pprint(excel_poib_data.info())
-
-    pp.pprint(excel_poib_json_data)
-    json_output_file = os.path.join(constants.OUTPUT_DIR, 'sample_po.json')
-    with open(json_output_file, mode="w", encoding="utf-8") as write_file:
-        write_file.write(str(excel_poib_json_data))
-        #json.dump(excel_poib_json_data, write_file)
-    df_output_file = os.path.join(constants.OUTPUT_DIR, 'sample_df.json')
-    with open(df_output_file, mode="w", encoding="utf-8") as df_write_file:
-        df_write_file.write(str(excel_poib_data))
-    #print("String of DF Object: " + str(excel_poib_data))
-
-    #print("String of to_json on DF object: " + str(excel_poib_data.to_json()))
-    #pprint.pprint("PP of to_json on DF object: " + excel_poib_data.to_json())
-    # pprint.pprint("PP of to_json on DF object: " + str(json_out))
-
-    # excel_wb = ExcelWorkbook(test_spreadsheet)
-    # po_table = excel_wb.get_defined_tables('PurchaseOrder_IB')
-    # logging.info("Getting excel info header row:[%s], first col [%s], last col [%s]", header_row,first_col,last_col)
-
-    # table_rows = excel_wb.get_table_data
-    # for ws in excel_ws:
-    #     logging.info("Worksheet [%s]", str(ws))
-    #     print(str(ws))
-    # open_poam_ws = poam_wb[in_open_poam_worksheet_name]
-    # For a worksheet, get the table data to create the data dictionary object
-    # get_spreadsheet_cols(args.input_file, print_cols=True)
 
 if __name__ == "__main__":
     main()

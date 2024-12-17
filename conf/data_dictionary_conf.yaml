@@ -1,0 +1,36 @@
+# For setting project/source code defaults
+data_dir: data
+conf_dir: conf
+misc_dir: misc
+util_dir: util
+
+source_worksheet_name: "PurchaseOrder_IB"
+source_file_name: "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
+# The columns in the spreadsheet
+entity_name: table1
+columns:
+    - source_column_name: 'Field Name'
+
+
+    , 'Field Type', 'Model Level', 'UI Audit', 'Required',
+       'USAID Required', 'USAID Model - Regular PO', 'Regular PO',
+       'Distribution Order', 'Repleneshiment Order', 'Format', 'Max Length',
+       'Description']
+
+api-key: './ddns-api-key.json'
+log-path: './ddns.log'
+hosts:
+    - host1:
+        fqdn: 'firewall.example.com.'
+        project_id: 'fluffy-penguin-242411'
+        managed_zone: 'example'
+        domain: 'example.com'
+        ttl: 60
+        interval: 600
+    - host2:
+        fqdn: 'stuff.example.org.'
+        project_id: 'fluffy-bear-213461'
+        managed_zone: 'example'
+        domain: 'example.org'
+        ttl: 70
+        interval: 700

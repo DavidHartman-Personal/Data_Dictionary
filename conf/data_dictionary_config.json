@@ -1,0 +1,34 @@
+{
+  "DATA_DICTIONARY_SOURCES": [
+    {
+      "source_worksheet_name": "PurchaseOrder_IB",
+      "entity_name": "PURCHASE_ORDER_IB",
+      "subject_area": "Transaction: Order Management",
+      "environment": "Data Generation",
+      "source_file_name": "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+      "attribute_column_mapping": {
+        "name": "Field Name",
+        "data_type": "Field Type",
+        "required": "Required",
+        "description": "Description",
+        "max_length": "Max Length",
+        "mask": "Format"
+      }
+    },
+    {
+      "source_worksheet_name": "PurchaseOrder_OB2",
+      "entity_name": "PURCHASE_ORDER_OB",
+      "subject_area": "Transaction: Order Management",
+      "environment": "Data Generation",
+      "source_file_name": "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+      "attribute_column_mapping": {
+        "name": "Field Name",
+        "data_type": "Field Type",
+        "required": "Required",
+        "description": "Description",
+        "max_length": "Max Length",
+        "mask": "Format"
+      }
+    }
+  ]
+}

@@ -2,9 +2,28 @@
 
 A Data Dictionary data class set of resources and code.
 
+## Use Cases/Stories
+
+1. A technical process that imports an Excel spreadsheet that contains data dictionary information.
+2. Create function that takes in a Excel file and a worksheet name and returns the Entity details (including Attributes) defined in the worksheet.
+3. Load existing data dictionary (generated from previous executions) information from JSON file into Data Dictionary objects (DataDictionary, Entity, Attribute)
+4. Export existing data dictionary objects to JSON formatted file.
+5. Capture configuration details needed to ingest Excel spreadsheets containing data dictionary elements
+6. Generate various output formats of a data dictionary (e.g. Markdown, Excel, Document, diagrams, etc.)
+
+![Data Dictionary JSON Output](.README_images/113cf6c5.png)
+
+## Key Processes
+
+The following key processes are implemented as part of this project.
+1. The ability to read in a Excel workbook containing 1 or more worksheets that contain data dictionary information for Entities and Attributes
+2. Create objects that can internally store a data dictionary containing 1 or more entities that contain 1 or more attributes
+3. Export a data dictionary to various formats (CSV, Excel, JSON, etc.)
+4. Create a set of linked pages that include data dictionary details.  This includes markdown pages.  These can be imported or otherwise used to make a data dictionary available to users.
+5. Maintain an external source (Excel, JSON, CSV, etc.) for the data dictionary that is imported as needed to add/update information from previous executions.
+6. Import any existing data dictionary information that has been created by previous executions prior to adding/updating new data.
+
 ## Process Flow
-
-
 
 ### Processing an Excel Data Dictionary Template
 
@@ -57,7 +76,6 @@ EXCEL_FILE_DIR = os.path.join(PROJECT_ROOT_DIR, 'input_files')
    Defined to handle the script processing, reading configuration settings, creating an `ExcelWorkbook` object, and presumably (though not fully implemented here) parsing the data into `DataDictionaryData` and related objects.
 
 The script lays out the foundation for interacting with an Excel workbook to extract and organize data into structured objects representing a data dictionary, though some implementation details, particularly the creation and manipulation of data objects, aren't fully shown in the provided snippet.
-
 
 ## Project Organization
 
