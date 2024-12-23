@@ -1,0 +1,110 @@
+{
+  "DICTIONARY_NAME": "USAID_Data_Dictionary",
+  "DESCRIPTION": "USAID Data Dictionary for One Network system",
+  "DATE_GENERATED": "2024-12-19T02:07:25.282476",
+  "ENVIRONMENT": "All",
+  "SOURCE_FILES": [
+    "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
+  ],
+  "ENTITIES": [
+    {
+      "ENTITY_ID": "PURCHASE_ORDER_IB",
+      "ENTITY_NAME": "PURCHASE_ORDER_IB",
+      "DESCRIPTION": "PURCHASE_ORDER_IB",
+      "SUBJECT_AREA": "Transaction: Order Management",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ACTION NAME",
+          "ATTRIBUTE_NAME": "Action Name",
+          "DESCRIPTION": "Actions Supported : OMS.SavePO, OMS.CreateFromInteg, OMS.UpdateFromInteg, OMS.CreateOrUpdateFromInteg, OMS.Create PO, OMS.CancelFromInteg",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "CREATION ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Creation Org Enterprise Name",
+          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "CREATION ORG NAME",
+          "ATTRIBUTE_NAME": "Creation Org Name",
+          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "OWNING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Owning Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Organization that owns the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "OWNING ORG NAME",
+          "ATTRIBUTE_NAME": "Owning Org Name",
+          "DESCRIPTION": "Organization Name of the Organization that owns the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Buying Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Buyer Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING ORG NAME",
+          "ATTRIBUTE_NAME": "Buying Org Name",
+          "DESCRIPTION": "Organization Name of the Buyer Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "SELLING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Selling Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Selling Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        },
+        {
+          "ATTRIBUTE_ID": "SELLING ORG NAME",
+          "ATTRIBUTE_NAME": "Selling Org Name",
+          "DESCRIPTION": "Organization Name of the Selling Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y"
+        }
+      ]
+    }
+  ]
+}

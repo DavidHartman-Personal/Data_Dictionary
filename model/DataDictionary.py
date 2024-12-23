@@ -26,7 +26,7 @@ import coloredlogs
 from pprint import pp
 from typing import List
 import json
-import datetime
+from datetime import datetime, date
 from pathlib import Path
 
 #: This effectively defines the root of this project and so adding ..\, etc is not needed in config files
@@ -51,8 +51,16 @@ coloredlogs.install(level=logging.INFO,
 
 
 def datetime_default(obj):
-    if isinstance(obj, (datetime.date, datetime.datetime)):
+    if isinstance(obj, (date, datetime)):
         return obj.isoformat()
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 class Attribute:
@@ -91,16 +99,39 @@ class Attribute:
         self.subject_area = subject_area
         self.environment = environment
         self.data_type = data_type
+        self._attribute_id = str(name).upper()
 
     def to_dict(self):
-        attribute_dict = dict(ATTRIBUTE_NAME=self.name,
-                           DESCRIPTION=self.description,
-                           SUBJECT_AREA=self.subject_area,
-                           ENVIRONMENT=self.environment,
-                           DATA_TYPE=self.data_type,
-                           MAX_LENGTH=self.max_length,
-                           REQUIRED=self.required)
+        attribute_dict = dict(ATTRIBUTE_ID=self._attribute_id,
+                              ATTRIBUTE_NAME=self.name,
+                              DESCRIPTION=self.description,
+                              SUBJECT_AREA=self.subject_area,
+                              ENVIRONMENT=self.environment,
+                              DATA_TYPE=self.data_type,
+                              MAX_LENGTH=self.max_length,
+                              REQUIRED=self.required)
         return attribute_dict
+
+    @classmethod
+    def attribute_from_dict(cls, attribute_dict: dict) -> Attribute:
+        # entity_dict = dict(ENTITY_ID=entity_dict['ENTITY_ID'],
+        #                    ENTITY_NAME=entity_dict['ENTITY_NAME'],
+        #                    DESCRIPTION=entity_dict['ENTITY_DESCRIPTION'],
+        #                    SUBJECT_AREA=entity_dict['SUBJECT_AREA'],
+        #                    ENVIRONMENT=entity_dict['ENVIRONMENT'],
+        #                    ATTRIBUTES=attribute_list)
+        return cls(name=attribute_dict['ATTRIBUTE_NAME'],
+                   description=attribute_dict['ATTRIBUTE_NAME'],
+                   subject_area=attribute_dict['SUBJECT_AREA'],
+                   environment=attribute_dict['ENVIRONMENT'],
+                   data_type=attribute_dict['DATA_TYPE'],
+                   max_length=attribute_dict['MAX_LENGTH'],
+                   key_types=attribute_dict['KEY_TYPES'],
+                   required=attribute_dict['REQUIRED'],
+                   mask=attribute_dict['MASK'],
+                   parent_entity_attributes=attribute_dict['parent_entity_attributes']
+                   )
+
 
 class Entity:
     """An Attribute contains details about a data attribute/column including data type information.
@@ -114,6 +145,8 @@ class Entity:
         subject_area (str): A subject area for the data attribute.
         environment (str): A environment for the data attribute.
         attributes (List[Attribute]): A list of attributes.
+
+    TODO: Change attributes to a dictionary and add check that attribute does not already exist for entity
 
     """
 
@@ -136,6 +169,7 @@ class Entity:
         else:
             self.attribute_count = len(attributes)
             self.attributes = list(attributes)
+        self._entity_id = str(name).upper()
 
     def __str__(self):
         return_str = ""
@@ -149,7 +183,8 @@ class Entity:
         return return_str
 
     def to_json(self):
-        entity_dict = dict(ENTITY_NAME=self.name,
+        entity_dict = dict(ENTITY_ID=self._entity_id,
+                           ENTITY_NAME=self.name,
                            DESCRIPTION=self.description,
                            SUBJECT_AREA=self.subject_area,
                            ENVIRONMENT=self.environment)
@@ -159,13 +194,28 @@ class Entity:
         attribute_list = list()
         for attribute in self.attributes:
             attribute_list.append(attribute.to_dict())
-        entity_dict = dict(ENTITY_NAME=self.name,
+        entity_dict = dict(ENTITY_ID=self._entity_id,
+                           ENTITY_NAME=self.name,
                            DESCRIPTION=self.description,
                            SUBJECT_AREA=self.subject_area,
                            ENVIRONMENT=self.environment,
                            ATTRIBUTES=attribute_list)
         return entity_dict
 
+    @classmethod
+    def entity_from_dict(cls, entity_dict: dict) -> Entity:
+        attribute_list = list()
+        for attribute in entity_dict['ATTRIBUTES']:
+            # Create attribute objects and add to Entity
+            new_attribute=Attribute.attribute_from_dict(attribute)
+            attribute_list.append(new_attribute)
+        # entity_dict = dict(ENTITY_ID=entity_dict['ENTITY_ID'],
+        #                    ENTITY_NAME=entity_dict['ENTITY_NAME'],
+        #                    DESCRIPTION=entity_dict['ENTITY_DESCRIPTION'],
+        #                    SUBJECT_AREA=entity_dict['SUBJECT_AREA'],
+        #                    ENVIRONMENT=entity_dict['ENVIRONMENT'],
+        #                    ATTRIBUTES=attribute_list)
+        return cls(name=entity_dict['ENTITY_NAME'],description=entity_dict['ENTITY_DESCRIPTION'],subject_area=entity_dict['SUBJECT_AREA'],environment=entity_dict['ENVIRONMENT'],attributes=attribute_list)
 
     def add_attribute(self, attribute: Attribute) -> None:
         """Adds an entity to the list of entities.
@@ -174,7 +224,7 @@ class Entity:
             attribute (Attribute): An attribute to add to the list of attributes.
         """
         logging.info("Adding Attribute [%s] to Entity [%s] to list of source files for the dictionary...",
-                     str(attribute.name),str(self.name))
+                     str(attribute.name), str(self.name))
         self.attributes.append(attribute)
 
 
@@ -192,6 +242,14 @@ class DataDictionary:
             entities (list[Entity]): A list of attributes.
             source_filename (str): The full path to the file used as the source for this data dictionary
 
+        Methods:
+            add_source_file: Adds a source file to the list of source files processed to create this data dictionary
+            add_entity: Adds an Entity to the list of Entities included in this data dictionary.
+            write_data_dictionary: Writes the data dictionary to a file using JSON.
+            create_data_dictionary_from_json: Creates a DataDictionary instance based on a JSON input file.
+
+        TODO: Change entities to a dictionary with the "entity_id" as the key.  Add checks for existing entity when adding entity.
+
     """
 
     def __init__(
@@ -203,6 +261,16 @@ class DataDictionary:
             source_filename: Path = None,
             entities: list[Entity] = None
     ) -> None:
+        """
+
+        Args:
+            name (str): A name for the data attribute.
+            description (str): A description for the data attribute.
+            subject_area (str): A subject area for the data attribute.
+            environment (str): A environment for the data attribute.
+            entities (list[Entity]): (Optional) A list of attributes.
+            source_filename (Path): (Optional) The full path to the file used as the source for this data dictionary
+        """
         self.source_files = None
         logging.info("function [%s]: Creating Data Dictionary Object [%s]...", str(__name__), str(name))
         self.name = name
@@ -220,6 +288,24 @@ class DataDictionary:
             self.entity_count = len(entities)
             self.entities = list(entities)
 
+    @classmethod
+    def create_data_dictionary_from_json(cls, data_dictionary_source_file: Path):
+        """Creates an instance of DataDictionary based on a JSON File
+
+        Creates an instance of DataDictionary based on a JSON File.  This includes creating Entity and Attribute objects.
+
+        Args:
+            data_dictionary_source_file (Path): The file system path to the Data Dictionary JSON File
+
+        Returns:
+            DataDictionary Class Object:
+        """
+        logging.info("Creating data dictionary object from [%s] source file", str(data_dictionary_source_file))
+        with open(data_dictionary_source_file, 'r') as file:
+            json_data = json.load(file)
+        logging.info("Creating Entity object based on input file.")
+        return cls(name=json_data['name'],description=json_data['description'],subject_area=json_data['subject_area'],environment=json_data['environment'])
+
     def add_source_file(self, source_file: Path) -> None:
         """Adds a source file to the list of source files for the data dictionary
 
@@ -235,18 +321,17 @@ class DataDictionary:
             logging.error("Not a valid file.")
 
     def add_entity(self, entity: Entity) -> None:
-        """Adds an entity to the list of entities.
+        """Adds an Entity to the list of entities.
 
         Args:
-            entity (Entity): The full path of the source file name to write data dictionary to
+            entity (Entity): The Entity to be added to the data dictionary
         """
         logging.info("Adding Entity to dictionary [%s] to list of source files for the dictionary...", str(entity))
         self.entities.append(entity)
 
     def write_data_dictionary(self, out_filename: Path) -> None:
-        """Writes contents of data dictionary to an JSON formatted file
+        """Writes contents of full data dictionary to an JSON formatted file
 
-        todo: details about output format options.
         This includes writing Entities and Attributes into a JSON formatted file.
 
         Args:
@@ -263,18 +348,14 @@ class DataDictionary:
             entities_list.append(entity.to_dict())
         out_dictionary = dict(DICTIONARY_NAME=self.name,
                               DESCRIPTION=self.description,
+                              DATE_GENERATED=datetime.now(),
                               ENVIRONMENT=self.environment,
                               SOURCE_FILES=dd_source_files,
                               ENTITIES=entities_list)
-        json_formatted_str = json.dumps(out_dictionary, indent=2, separators=(',', ': '))
-        print(str(json_formatted_str))
+        # json_formatted_str = json.dumps(out_dictionary, default=json_serial, indent=2, separators=(',', ': '))
+        # print(str(json_formatted_str))
         with open(out_filename, 'w') as json_out_handle:
-            json.dump(out_dictionary, json_out_handle, indent=2, default=datetime_default, separators=(',', ': '))
-        # try:
-        #     with open(out_filename, 'w') as json_out_handle:
-        #         json.dump(self.to_json(self), json_out_handle, default=datetime_default)
-        # except Exception as err:
-        #     logging.error("Could not create file for data dictionary [%s]", str(out_filename))
+            json.dump(out_dictionary, json_out_handle, indent=2, default=json_serial, separators=(',', ': '))
 
     def __str__(self):
         return_str = ""

@@ -7,11 +7,10 @@ This script data from an Excel workbook to create a data dictionary object.
 import argparse
 import configparser
 import os
-from excel_workbook.excel_workbook import ExcelWorkbook2 as ExcelWorkbook
 import logging
 import coloredlogs
 from data_dictionary import constants
-from openpyxl import load_workbook
+from openpyxl import load_workbook, worksheet
 import pandas as pd
 import json
 import pprint as pp
@@ -83,34 +82,62 @@ def get_all_tables(filename):
     return tables_dict
 
 
-def read_excel_table(sheet, table_name):
-    """
-    This function will read an Excel table
-    and return a tuple of columns and data
+def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary: dd):
+    """Creates Entity object from an Excel Worksheet and adds it to the data dictionary
 
-    This function assumes that tables have column headers
+    This function takes in a worksheet that is in the appropriate format and creates an Entity object
+    that is then added to the data dictionary.  This function uses panda data frames to read the Excel file.
+    TODO: Add check to make sure worksheet exists in Excel file.
+    TODO: Add check that worksheet contains all required header fields (e.g. NAME, DESCRIPTION, etc.)
+
     Args:
-      sheet (worksheet): The worksheet name
-      table_name (str): The table name
+      data_dictionary (DataDictionary):
+      spreadsheet_file (Path): The worksheet name
 
     Returns:
-      columns, data: Arrays of the columns and the data.
+      None
     """
-    table = sheet.tables[table_name]
-    table_range = table.ref
+    logging.info("Creating entities from excel worksheet")
+    excel_poib_data = pd.read_excel(spreadsheet_file,
+                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(np.nan, None)
+    entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+                       description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+                       subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+                       environment=constants.SOURCE_DATA_DICT_MAPPING['environment']
+                       )
+    for row_label, row in excel_poib_data.iterrows():
+        entity_attribute = dd.Attribute(
+            name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
+            description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
+            data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
+            subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+            environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
+            max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']]
+        )
+        entity.add_attribute(entity_attribute)
+    data_dictionary.add_entity(entity)
 
-    table_head = sheet[table_range][0]
-    table_data = sheet[table_range][1:]
 
-    columns = [column.value for column in table_head]
-    data = {column: [] for column in columns}
+def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
+    """
 
-    for row in table_data:
-        row_val = [cell.value for cell in row]
-        for key, val in zip(columns, row_val):
-            data[key].append(val)
+    Args:
+        data_dictionary_source_file (Path): Location of existing data dictionary JSON File.
+    Returns:
+         DataDictionary: Data dictionary object
+    """
+    logging.info("Reading in data dictionary...")
+    with open(data_dictionary_source_file, 'r') as file:
+        json_data = json.load(file)
+    print(str(json_data))
+    data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
+                                  description="USAID Data Dictionary for One Network system",
+                                  subject_area="All",
+                                  environment="All",
+                                  source_filename=data_dictionary_source_file
+                                  )
 
-    return columns, data
+    return data_dict
 
 
 def main():
@@ -160,28 +187,36 @@ def main():
                                   environment="All",
                                   source_filename=test_spreadsheet
                                   )
-    logging.info("Creating ExcelWorkbook Object [%s]", test_spreadsheet)
-    excel_poib_data = pd.read_excel(test_spreadsheet,
-                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
-        np.nan, None)
-    entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
-                       description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
-                       subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
-                       environment=constants.SOURCE_DATA_DICT_MAPPING['environment']
-                       )
-    for row_label, row in excel_poib_data.iterrows():
-        entity_attribute = dd.Attribute(
-            name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
-            description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
-            data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
-            subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
-            environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
-            max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']],
-        )
-        entity.add_attribute(entity_attribute)
-    data_dict.add_entity(entity)
+    create_entities_from_excel_worksheet(test_spreadsheet, data_dict)
     data_dict.write_data_dictionary(dd_output_file)
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    source_input_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
+    output_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
+    input_file_name = "po_sample.xlsx"
+    output_file_name = "data_dictionary.json"
+    test_spreadsheet = source_input_filepath / input_file_name
+    dd_output_file = output_filepath / output_file_name
+    dd_1 = read_in_data_dictionary(dd_output_file)
+
+    # excel_poib_data = pd.read_excel(test_spreadsheet,
+    #                                 sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
+    #     np.nan, None)
+    # entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+    #                    description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
+    #                    subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+    #                    environment=constants.SOURCE_DATA_DICT_MAPPING['environment']
+    #                    )
+    # for row_label, row in excel_poib_data.iterrows():
+    #     entity_attribute = dd.Attribute(
+    #         name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
+    #         description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
+    #         data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
+    #         subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
+    #         environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
+    #         max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']],
+    #     )
+    #     entity.add_attribute(entity_attribute)
+    # data_dict.add_entity(entity)
