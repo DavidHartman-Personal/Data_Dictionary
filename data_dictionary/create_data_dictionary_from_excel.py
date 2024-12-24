@@ -127,17 +127,9 @@ def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
          DataDictionary: Data dictionary object
     """
     logging.info("Reading in data dictionary...")
-    with open(data_dictionary_source_file, 'r') as file:
-        json_data = json.load(file)
-    print(str(json_data))
-    data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
-                                  description="USAID Data Dictionary for One Network system",
-                                  subject_area="All",
-                                  environment="All",
-                                  source_filename=data_dictionary_source_file
-                                  )
-
-    return data_dict
+    data_dict_from_json = dd.DataDictionary.create_data_dictionary_from_json(data_dictionary_source_file)
+    print(str(data_dict_from_json))
+    return data_dict_from_json
 
 
 def main():

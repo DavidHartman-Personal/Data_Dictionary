@@ -90,6 +90,8 @@ class Attribute:
             required: str = "Y",
             parent_entity_attributes: list[(Entity, Attribute)] = None
     ) -> None:
+        if len(name) == 0:
+            raise NameError("Attribute name is required")
         self.required = required
         self.key_types = key_types
         self.mask = mask
@@ -114,22 +116,26 @@ class Attribute:
 
     @classmethod
     def attribute_from_dict(cls, attribute_dict: dict) -> Attribute:
-        # entity_dict = dict(ENTITY_ID=entity_dict['ENTITY_ID'],
-        #                    ENTITY_NAME=entity_dict['ENTITY_NAME'],
-        #                    DESCRIPTION=entity_dict['ENTITY_DESCRIPTION'],
-        #                    SUBJECT_AREA=entity_dict['SUBJECT_AREA'],
-        #                    ENVIRONMENT=entity_dict['ENVIRONMENT'],
-        #                    ATTRIBUTES=attribute_list)
-        return cls(name=attribute_dict['ATTRIBUTE_NAME'],
-                   description=attribute_dict['ATTRIBUTE_NAME'],
-                   subject_area=attribute_dict['SUBJECT_AREA'],
-                   environment=attribute_dict['ENVIRONMENT'],
-                   data_type=attribute_dict['DATA_TYPE'],
-                   max_length=attribute_dict['MAX_LENGTH'],
-                   key_types=attribute_dict['KEY_TYPES'],
-                   required=attribute_dict['REQUIRED'],
-                   mask=attribute_dict['MASK'],
-                   parent_entity_attributes=attribute_dict['parent_entity_attributes']
+        """Creates an instance of DataDictionary based on a dict containing an Attribute definition
+
+        Creates an instance of Entity from a dict containing Attribute details, including attributes.
+        TODO: Add check for keys in dictionary when creating an Attribute (i.e. confirm dict has ENTITY_NAME, etc.)
+
+        Args:
+             attribute_dict (dict): A dictionary containing an Attribute definition
+        Returns:
+             Attribute Class Object:
+        """
+        return cls(name=attribute_dict.get('ATTRIBUTE_NAME', "Required"),
+                   description=attribute_dict.get('DESCRIPTION', "Description"),
+                   subject_area=attribute_dict.get('SUBJECT_AREA', ""),
+                   environment=attribute_dict.get('ENVIRONMENT', ""),
+                   data_type=attribute_dict.get('DATA_TYPE', ""),
+                   max_length=attribute_dict.get('MAX_LENGTH', 0),
+                   key_types=attribute_dict.get('KEY_TYPES', []),
+                   required=attribute_dict.get('REQUIRED', ""),
+                   mask=attribute_dict.get('MASK', ""),
+                   parent_entity_attributes=attribute_dict.get('PARENT_ENTITY_ATTRIBUTES', list()),
                    )
 
 
@@ -147,6 +153,7 @@ class Entity:
         attributes (List[Attribute]): A list of attributes.
 
     TODO: Change attributes to a dictionary and add check that attribute does not already exist for entity
+    TODO: Add check for required elements and raise errors as needed.
 
     """
 
@@ -158,6 +165,8 @@ class Entity:
             environment: str,
             attributes: list[Attribute] = None
     ) -> None:
+        if len(name) == 0:
+            raise NameError("Name must be provided")
         self.name = name
         self.description = description
         self.subject_area = subject_area
@@ -182,7 +191,12 @@ class Entity:
             logging.error("Could not print string for object [%s]", str(e))
         return return_str
 
-    def to_json(self):
+    def to_json(self) -> str:
+        """Converts an Entity instance into a dictionary object containing Entity data elements
+
+        Returns:
+            Entity dict (str): JSON formatted string
+        """
         entity_dict = dict(ENTITY_ID=self._entity_id,
                            ENTITY_NAME=self.name,
                            DESCRIPTION=self.description,
@@ -190,7 +204,12 @@ class Entity:
                            ENVIRONMENT=self.environment)
         return json.dumps(entity_dict, separators=(',', ': '))
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Create a dictionary object containing Entity properties
+
+        Returns:
+            dict: A dictionary object containing Entity properties
+        """
         attribute_list = list()
         for attribute in self.attributes:
             attribute_list.append(attribute.to_dict())
@@ -204,18 +223,46 @@ class Entity:
 
     @classmethod
     def entity_from_dict(cls, entity_dict: dict) -> Entity:
+        """Creates an instance of DataDictionary based on a dict containing an Entity definition
+
+        Creates an instance of Entity from a dict containing Entity details, including attributes.
+        TODO: Add check for keys in dictionary when creating an Entity (i.e. confirm dict has ENTITY_NAME, etc.)
+
+       Args:
+             entity_dict (dict): A dictionary containing an Entity definition
+       Returns:
+             Entity Class Object:
+        """
         attribute_list = list()
         for attribute in entity_dict['ATTRIBUTES']:
-            # Create attribute objects and add to Entity
-            new_attribute=Attribute.attribute_from_dict(attribute)
+            # Create attribute object and add to Entity
+            new_attribute = Attribute.attribute_from_dict(attribute)
             attribute_list.append(new_attribute)
-        # entity_dict = dict(ENTITY_ID=entity_dict['ENTITY_ID'],
-        #                    ENTITY_NAME=entity_dict['ENTITY_NAME'],
-        #                    DESCRIPTION=entity_dict['ENTITY_DESCRIPTION'],
-        #                    SUBJECT_AREA=entity_dict['SUBJECT_AREA'],
-        #                    ENVIRONMENT=entity_dict['ENVIRONMENT'],
-        #                    ATTRIBUTES=attribute_list)
-        return cls(name=entity_dict['ENTITY_NAME'],description=entity_dict['ENTITY_DESCRIPTION'],subject_area=entity_dict['SUBJECT_AREA'],environment=entity_dict['ENVIRONMENT'],attributes=attribute_list)
+        return cls(name=entity_dict.get('ENTITY_NAME',"Required"),
+                   description=entity_dict.get('DESCRIPTION',""),
+                   subject_area=entity_dict.get('SUBJECT_AREA',""),
+                   environment=entity_dict.get('ENVIRONMENT',""),
+                   attributes=attribute_list)
+
+    @classmethod
+    def entity_from_json(cls, entity_json_string: str) -> Entity:
+        """Create an Entity instance from JSON formatted string
+
+        Args:
+            entity_json_string (str): JSON formatted string
+
+        Returns:
+            Entity: Creates an Entity instance
+        """
+        attribute_list = list()
+        entity_dict = json.loads(entity_json_string)
+        for attribute in entity_dict['ATTRIBUTES']:
+            # Create attribute objects and add to Entity
+            new_attribute = Attribute.attribute_from_dict(attribute)
+            attribute_list.append(new_attribute)
+        return cls(name=entity_dict['ENTITY_NAME'], description=entity_dict['ENTITY_DESCRIPTION'],
+                   subject_area=entity_dict['SUBJECT_AREA'], environment=entity_dict['ENVIRONMENT'],
+                   attributes=attribute_list)
 
     def add_attribute(self, attribute: Attribute) -> None:
         """Adds an entity to the list of entities.
@@ -289,7 +336,7 @@ class DataDictionary:
             self.entities = list(entities)
 
     @classmethod
-    def create_data_dictionary_from_json(cls, data_dictionary_source_file: Path):
+    def create_data_dictionary_from_json(cls, data_dictionary_source_file: Path) -> DataDictionary:
         """Creates an instance of DataDictionary based on a JSON File
 
         Creates an instance of DataDictionary based on a JSON File.  This includes creating Entity and Attribute objects.
@@ -303,8 +350,15 @@ class DataDictionary:
         logging.info("Creating data dictionary object from [%s] source file", str(data_dictionary_source_file))
         with open(data_dictionary_source_file, 'r') as file:
             json_data = json.load(file)
-        logging.info("Creating Entity object based on input file.")
-        return cls(name=json_data['name'],description=json_data['description'],subject_area=json_data['subject_area'],environment=json_data['environment'])
+        entity_list = list()
+        for entity in json_data['ENTITIES']:
+            logging.info("Creating entity in Data Dictionary: [%s]", str(entity))
+            new_entity = Entity.entity_from_dict(entity)
+            entity_list.append(new_entity)
+        logging.info("Creating DataDictionary object based on input file.")
+        return cls(name=json_data['DICTIONARY_NAME'], description=json_data['DESCRIPTION'],
+                   subject_area=json_data['DICTIONARY_NAME'], environment=json_data['ENVIRONMENT'],
+                   entities=entity_list)
 
     def add_source_file(self, source_file: Path) -> None:
         """Adds a source file to the list of source files for the data dictionary
