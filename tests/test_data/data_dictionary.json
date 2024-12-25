@@ -1,6 +1,6 @@
 {
   "DICTIONARY_NAME": "USAID_Data_Dictionary",
-  "DESCRIPTION": "USAID Data Dictionary for One Network system",
+  "DESCRIPTION": "USAID Data Dictionary for One Network system.  This test data contains 3 entities with several attributes each.",
   "DATE_GENERATED": "2024-12-19T02:07:25.282476",
   "ENVIRONMENT": "All",
   "SOURCE_FILES": [
@@ -8,100 +8,179 @@
   ],
   "ENTITIES": [
     {
-      "ENTITY_ID": "PURCHASE_ORDER_IB",
-      "ENTITY_NAME": "PURCHASE_ORDER_IB",
-      "DESCRIPTION": "PURCHASE_ORDER_IB",
-      "SUBJECT_AREA": "Transaction: Order Management",
+      "ENTITY_ID": "ENTERPRISE",
+      "ENTITY_NAME": "ENTERPRISE",
+      "DESCRIPTION": "Enterprise entity.  An Enterprise is the top level of the Orgnization Hierarchy",
+      "SUBJECT_AREA": "Master Data",
       "ENVIRONMENT": "Data Generation",
       "ATTRIBUTES": [
         {
-          "ATTRIBUTE_ID": "ACTION NAME",
-          "ATTRIBUTE_NAME": "Action Name",
-          "DESCRIPTION": "Actions Supported : OMS.SavePO, OMS.CreateFromInteg, OMS.UpdateFromInteg, OMS.CreateOrUpdateFromInteg, OMS.Create PO, OMS.CancelFromInteg",
-          "SUBJECT_AREA": "Transaction: Order Management",
+          "ATTRIBUTE_ID": "ENTERPRISE_ID",
+          "ATTRIBUTE_NAME": "ENTERPRISE_ID",
+          "DESCRIPTION": "A surrogate key that identifies and Enterprise",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_NAME",
+          "ATTRIBUTE_NAME": "ENTERPRISE_NAME",
+          "DESCRIPTION": "The name of the Enterprise",
+          "SUBJECT_AREA": "Master Data",
           "ENVIRONMENT": "Data Generation",
           "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "KEYS": []
+        },
+{
+          "ATTRIBUTE_ID": "ENTERPRISE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ENTERPRISE_DESCRIPTION",
+          "DESCRIPTION": "The description of the ENTERPRISE",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "N",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Enterprise was created",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATE",
           "MAX_LENGTH": null,
           "REQUIRED": "Y"
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "ORGANIZATION",
+      "ENTITY_NAME": "ORGANIZATION",
+      "DESCRIPTION": "Organization entity.  An Enterprise contains 1 or more Orgnizations.",
+      "SUBJECT_AREA": "Master Data",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "A surrogate key that identifies and organization",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
         },
         {
-          "ATTRIBUTE_ID": "CREATION ORG ENTERPRISE NAME",
-          "ATTRIBUTE_NAME": "Creation Org Enterprise Name",
-          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
-          "SUBJECT_AREA": "Transaction: Order Management",
+          "ATTRIBUTE_ID": "ORGANIZATION_NAME",
+          "ATTRIBUTE_NAME": "ORGANIZATION_NAME",
+          "DESCRIPTION": "The name of the organization",
+          "SUBJECT_AREA": "Master Data",
           "ENVIRONMENT": "Data Generation",
           "DATA_TYPE": "STRING",
           "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_ID",
+          "ATTRIBUTE_NAME": "ENTERPRISE_ID",
+          "DESCRIPTION": "A foreign key that links to an Enterprise.  An Enterprise contains 1 or more Organizations.  An Organization belongs to one and only one Enterprise",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["FK"]
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ORGANIZATION_DESCRIPTION",
+          "DESCRIPTION": "The description of the organization",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "N",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Organization was created",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATE",
+          "MAX_LENGTH": null,
           "REQUIRED": "Y"
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "SITE",
+      "ENTITY_NAME": "SITE",
+      "DESCRIPTION": "Site entity",
+      "SUBJECT_AREA": "Master Data",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "SITE_ID",
+          "ATTRIBUTE_NAME": "SITE_ID",
+          "DESCRIPTION": "A surrogate key that identifies and Site",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
         },
         {
-          "ATTRIBUTE_ID": "CREATION ORG NAME",
-          "ATTRIBUTE_NAME": "Creation Org Name",
-          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
-          "SUBJECT_AREA": "Transaction: Order Management",
+          "ATTRIBUTE_ID": "SITE_NAME",
+          "ATTRIBUTE_NAME": "SITE_NAME",
+          "DESCRIPTION": "The name of the Site",
+          "SUBJECT_AREA": "Master Data",
           "ENVIRONMENT": "Data Generation",
           "DATA_TYPE": "STRING",
           "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
+          "REQUIRED": "Y",
+          "KEYS": []
         },
         {
-          "ATTRIBUTE_ID": "OWNING ORG ENTERPRISE NAME",
-          "ATTRIBUTE_NAME": "Owning Org Enterprise Name",
-          "DESCRIPTION": "Enterprise Name of the Organization that owns the order.",
-          "SUBJECT_AREA": "Transaction: Order Management",
+          "ATTRIBUTE_ID": "SITE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "SITE_DESCRIPTION",
+          "DESCRIPTION": "The description of the Site",
+          "SUBJECT_AREA": "Master Data",
           "ENVIRONMENT": "Data Generation",
           "DATA_TYPE": "STRING",
           "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
+          "REQUIRED": "N",
+          "KEYS": []
         },
         {
-          "ATTRIBUTE_ID": "OWNING ORG NAME",
-          "ATTRIBUTE_NAME": "Owning Org Name",
-          "DESCRIPTION": "Organization Name of the Organization that owns the order.",
-          "SUBJECT_AREA": "Transaction: Order Management",
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "A foreign key that links to an Organization.  An Organization contains 1 or more Sites",
+          "SUBJECT_AREA": "Master Data",
           "ENVIRONMENT": "Data Generation",
-          "DATA_TYPE": "STRING",
-          "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["FK"]
         },
         {
-          "ATTRIBUTE_ID": "BUYING ORG ENTERPRISE NAME",
-          "ATTRIBUTE_NAME": "Buying Org Enterprise Name",
-          "DESCRIPTION": "Enterprise Name of the Buyer Organization.",
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Organization was created",
           "SUBJECT_AREA": "Transaction: Order Management",
           "ENVIRONMENT": "Data Generation",
-          "DATA_TYPE": "STRING",
-          "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
-        },
-        {
-          "ATTRIBUTE_ID": "BUYING ORG NAME",
-          "ATTRIBUTE_NAME": "Buying Org Name",
-          "DESCRIPTION": "Organization Name of the Buyer Organization.",
-          "SUBJECT_AREA": "Transaction: Order Management",
-          "ENVIRONMENT": "Data Generation",
-          "DATA_TYPE": "STRING",
-          "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
-        },
-        {
-          "ATTRIBUTE_ID": "SELLING ORG ENTERPRISE NAME",
-          "ATTRIBUTE_NAME": "Selling Org Enterprise Name",
-          "DESCRIPTION": "Enterprise Name of the Selling Organization.",
-          "SUBJECT_AREA": "Transaction: Order Management",
-          "ENVIRONMENT": "Data Generation",
-          "DATA_TYPE": "STRING",
-          "MAX_LENGTH": 128.0,
-          "REQUIRED": "Y"
-        },
-        {
-          "ATTRIBUTE_ID": "SELLING ORG NAME",
-          "ATTRIBUTE_NAME": "Selling Org Name",
-          "DESCRIPTION": "Organization Name of the Selling Organization.",
-          "SUBJECT_AREA": "Transaction: Order Management",
-          "ENVIRONMENT": "Data Generation",
-          "DATA_TYPE": "STRING",
-          "MAX_LENGTH": 128.0,
+          "DATA_TYPE": "DATE",
+          "MAX_LENGTH": null,
           "REQUIRED": "Y"
         }
       ]

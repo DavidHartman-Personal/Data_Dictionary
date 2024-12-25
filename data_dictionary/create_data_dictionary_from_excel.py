@@ -128,7 +128,6 @@ def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
     """
     logging.info("Reading in data dictionary...")
     data_dict_from_json = dd.DataDictionary.create_data_dictionary_from_json(data_dictionary_source_file)
-    print(str(data_dict_from_json))
     return data_dict_from_json
 
 
@@ -185,13 +184,11 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    source_input_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
-    output_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
     input_file_name = "po_sample.xlsx"
     output_file_name = "data_dictionary.json"
-    test_spreadsheet = source_input_filepath / input_file_name
-    dd_output_file = output_filepath / output_file_name
-    dd_1 = read_in_data_dictionary(dd_output_file)
+    test_spreadsheet = constants.source_folder / input_file_name
+    dd_output_file = constants.output_folder / output_file_name
+    dd_1 = read_in_data_dictionary(constants.test_data_file)
 
     # excel_poib_data = pd.read_excel(test_spreadsheet,
     #                                 sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(

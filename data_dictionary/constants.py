@@ -1,5 +1,6 @@
 # constants.py
 import os
+from pathlib import Path
 
 """This module defines project-level constants."""
 
@@ -26,6 +27,12 @@ FILENAME_INPUT_CONFIG = os.environ.get('CONFIG_FILE_PATH',
                                        os.path.join(CONF_DIR, 'data_dictionary.conf'))
 
 DEFAULT_SPREADSHEET = "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
+source_folder = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
+output_folder = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
+tests_folder = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'tests'
+test_data_folder = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'tests' / 'test_data'
+docs_folder = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'docs'
+test_data_file = test_data_folder / 'data_dictionary.json'
 
 #: Default Excel cell/row/col for a data dictionary worksheet
 DEFAULT_HEADER_ROW = '1'

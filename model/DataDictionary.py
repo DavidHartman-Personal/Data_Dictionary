@@ -166,7 +166,7 @@ class Entity:
             attributes: list[Attribute] = None
     ) -> None:
         if len(name) == 0:
-            raise NameError("Name must be provided")
+            raise NameError("Entity Name must be provided")
         self.name = name
         self.description = description
         self.subject_area = subject_area
@@ -236,6 +236,9 @@ class Entity:
         attribute_list = list()
         for attribute in entity_dict['ATTRIBUTES']:
             # Create attribute object and add to Entity
+            logging.info("Creating Attribute for Entity: [%s].[%s]",
+                         str(entity_dict['ENTITY_NAME']),
+                         str(attribute['ATTRIBUTE_NAME']))
             new_attribute = Attribute.attribute_from_dict(attribute)
             attribute_list.append(new_attribute)
         return cls(name=entity_dict.get('ENTITY_NAME',"Required"),
@@ -318,8 +321,9 @@ class DataDictionary:
             entities (list[Entity]): (Optional) A list of attributes.
             source_filename (Path): (Optional) The full path to the file used as the source for this data dictionary
         """
+        if len(name) == 0:
+            raise NameError("Dictionary name must be provided")
         self.source_files = None
-        logging.info("function [%s]: Creating Data Dictionary Object [%s]...", str(__name__), str(name))
         self.name = name
         self.description = description
         self.subject_area = subject_area
@@ -352,7 +356,7 @@ class DataDictionary:
             json_data = json.load(file)
         entity_list = list()
         for entity in json_data['ENTITIES']:
-            logging.info("Creating entity in Data Dictionary: [%s]", str(entity))
+            logging.info("Creating entity in Data Dictionary: [%s]", str(entity['ENTITY_NAME']))
             new_entity = Entity.entity_from_dict(entity)
             entity_list.append(new_entity)
         logging.info("Creating DataDictionary object based on input file.")
