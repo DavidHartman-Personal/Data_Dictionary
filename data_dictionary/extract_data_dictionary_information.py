@@ -1,6 +1,11 @@
-"""Create a data dictionary object from an Excel Workbook that contains data/details.
+"""This script is used to extract various details related to DataDictionary information from various sources
 
-This script data from an Excel workbook to create a data dictionary object.
+This script is used to extract various details related to DataDictionary information from various sources.
+This includes spreadsheets, Documents, CSV files, etc.
+The intention is to use the information to create a complete mapping and configurations of the various sources of information
+related to Data Dictionary details.
+The information will be captured in a dictionary that can then be utilized by other scripts/modules/etc. to extract
+all metadata needed to create a complete data dictionary.
 
 """
 
@@ -99,7 +104,8 @@ def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary
     """
     logging.info("Creating entities from excel worksheet")
     excel_poib_data = pd.read_excel(spreadsheet_file,
-                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(np.nan, None)
+                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
+        np.nan, None)
     entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
                        description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
                        subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
@@ -119,7 +125,9 @@ def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary
 
 
 def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
-    """
+    """Create a DataDictionary instance using the classmethod for creating instance from JSON file.
+
+    TODO: (P3) Add steps to confirm JSON file is structured as required.
 
     Args:
         data_dictionary_source_file (Path): Location of existing data dictionary JSON File.
@@ -131,13 +139,20 @@ def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
     return data_dict_from_json
 
 
-def create_markdown_files() -> None:
-    """Creates markdown files based on Data Dictionary objects
+def create_data_dictionary_markdown_files() -> None:
+    """Creates markdown files based on DataDictionary instance
 
     Returns:
         None
     """
-    pass
+    input_file_name = "po_sample.xlsx"
+    output_file_name = "data_dictionary.json"
+    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
+
+    dd_1 = read_in_data_dictionary(constants.TEST_DATA_FILE)
+    dd_1.write_data_dictionary(dd_output_file)
+    dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
+
 
 def main():
     """The main method for this script.
@@ -174,12 +189,10 @@ def main():
         return header_row_out, first_col_out, last_col_out, source_file_name_out, source_worksheet_name_out
 
     (header_row, first_col, last_col, source_spreadsheet_file, source_worksheet_name) = get_configs(config_filename)
-    source_input_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
-    output_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
     input_file_name = "po_sample.xlsx"
     output_file_name = "data_dictionary.json"
-    test_spreadsheet = source_input_filepath / input_file_name
-    dd_output_file = output_filepath / output_file_name
+    test_spreadsheet = constants.SOURCE_FOLDER / input_file_name
+    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
     data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
                                   description="USAID Data Dictionary for One Network system",
                                   subject_area="All",
@@ -191,16 +204,19 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    input_file_name = "po_sample.xlsx"
-    output_file_name = "data_dictionary.json"
-    test_spreadsheet = constants.SOURCE_FOLDER / input_file_name
-    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
+    main()
 
-    dd_1 = read_in_data_dictionary(constants.TEST_DATA_FILE)
-    dd_1.write_data_dictionary(dd_output_file)
-    dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
-
+    # ************* Steps that were used to created markdown files ********************************
+    # input_file_name = "po_sample.xlsx"
+    # output_file_name = "data_dictionary.json"
+    # test_spreadsheet = constants.SOURCE_FOLDER / input_file_name
+    # dd_output_file = constants.OUTPUT_FOLDER / output_file_name
+    #
+    # dd_1 = read_in_data_dictionary(constants.TEST_DATA_FILE)
+    # dd_1.write_data_dictionary(dd_output_file)
+    # dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
+    # *************  ********************************
+    #
     # excel_poib_data = pd.read_excel(test_spreadsheet,
     #                                 sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
     #     np.nan, None)

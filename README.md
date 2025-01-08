@@ -7,9 +7,522 @@ A Data Dictionary data class set of resources and code.
   - create_data_dictionary_from_excel script
   - Configuration files
   - DataDictionary exports (JSON, etc.)
-- [ ] Create function that reads in an existing Data Dictionary JSON file.
+- [x] Create function that reads in an existing Data Dictionary JSON file.
 - [ ] Create sample data for PSM For Sales Order/Delivery
 
+## Process for Loading Data Dictionary
+
+The below high level steps describe the process for identifying and loading Data Dictionary Data and the process for generating sample data
+
+1. Identify source of Sales Order Test Data data element definitions
+2. Example sample data scenarios
+3. Identify all Parent entities defined in the Sales Order definition
+4. Sample data generation order
+5. Ensuring FK/PK relationships for child entities in sample data
+6. Using created markdown/confluence page to extract seed data (e.g. Enterprise) from Confluence page, etc. if available.
+7. Excel Entity/Attribute definitions should also identify the Process Flows that interact with for each Entity/Attribute
+
+
+### Identify source of Sales Order Test Data data element definitions
+
+See table below for details related to metadata available related to Sales Orders.  
+
+| Attribute Name                                                            | Column Name                     | Description                                                                           |
+|:--------------------------------------------------------------------------|:--------------------------------|:--------------------------------------------------------------------------------------|
+| AllUSAIDInterfaces-Release Date -11-15-2024.xlsx                          | HCPT.SalesOrder_IBv1.0          | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx-HCPT.SalesOrder_IBv1.0               |
+| AllUSAIDInterfaces-Release Date -11-15-2024.xlsx                          | OMS.SalesOrder_IBv4.0           | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx-OMS.SalesOrder_IBv4.0                |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | Sales Order                     | SCCT Enterprise Mapping Document 20240813.xlsx-Sales Order                            |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | OMS.SalesOrder_IBv4.0           | SCCT Enterprise Mapping Document 20240813.xlsx-OMS.SalesOrder_IBv4.0                  |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | Sales Order for Cust Site PSM   | SCCT Enterprise Mapping Document 20240813.xlsx-Sales Order for Cust Site PSM          |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | Sales Order for Cust Site NG    | SCCT Enterprise Mapping Document 20240813.xlsx-Sales Order for Cust Site NG           |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | Sales Order for RoGI            | SCCT Enterprise Mapping Document 20240813.xlsx-Sales Order for RoGI                   |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | HCPT.SalesOrder_IBv1.0          | SCCT Enterprise Mapping Document 20240813.xlsx-HCPT.SalesOrder_IBv1.0                 |
+| SCCT Enterprise Mapping Document 20240813.xlsx                            | RPL.EnhancedBucketizedOrderForB | SCCT Enterprise Mapping Document 20240813.xlsx-RPL.EnhancedBucketizedOrderForB        |
+| USAID NextGen SCCT GHSC-PSM Implementing Partner Specifications v1.2.xlsx | Sales Order                     | USAID NextGen SCCT GHSC-PSM Implementing Partner Specifications v1.2.xlsx-Sales Order |
+
+### Script used to Extract Sales Order metadata
+
+The [extract_data_dictionary_information](./data_dictionary/extract_data_dictionary_information.py) script is used to extract details from spreadsheets, documents, files, etc. This includes a dictionary/JSON data structures that can be then used to extract other data dictionary related information.
+
+```json
+SOURCE_DATA_DICT_MAPPING = {
+    'source_worksheet_name': 'PurchaseOrder_IB',
+    'entity_name': "PURCHASE_ORDER_IB",
+    'subject_area': "Transaction: Order Management",
+    'environment': "Data Generation",
+    'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+    # worksheet columns are mapped to DataDictionary, Entity and Attribute class property. e.g. 'Field Name' maps to Attribute.name
+    'attribute_column_mapping': {
+        'name': "Field Name",
+        'data_type': "Field Type",
+        'required': "Required",
+        'description': "Description",
+        'max_length': "Max Length",
+        'mask': "Format"
+    }
+}
+```
+
+[//]: # (TODO: Create function that can print markdown text that can be pasted into documentation.  E.g. a table that lists the spreadsheet files, tabs, etc. that is built from the data structure created in the script above.)
+
+
+```mermaid
+sequenceDiagram
+    %% A template for creating a mermaid sequence diagram
+    autonumber
+    participant User
+    participant Script as extract_data_dictionary_information
+    %% Include additional components/participants/actors/scripts/etc. that are involved in the process
+    %% For example, Classes or modules that are required for the script 
+    participant AdditionalScriptParticipant
+    User->>Script: Initial call to start script
+    Script->>AdditionalScriptParticipant: A step in the script
+```
+
+### Example sample data scenarios
+
+### Identify all Parent entities defined in the Sales Order definition
+
+### Sample data generation order
+
+### Ensuring FK/PK relationships for child entities in sample data
+
+### Using created markdown/confluence page to extract seed data (e.g. Enterprise) from Confluence page, etc. if available.
+
+### Excel Entity/Attribute definitions should also identify the Process Flows that interact with for each Entity/Attribute
+
+ 
+
+## Current Processes
+
+Here's an explanation of each step in the flowchart for the `create_data_dictionary_from_excel.py` script:
+1. **Start Script**: This is the entry point of the script where execution begins.
+2. **Process Command Line Arguments**: The script processes any command line arguments provided by the user to customize the behavior or input/output of the script.
+3. **Get Config Details from conf/data_dictionary.conf**: This step involves reading configuration details from a specified configuration file, which likely contains settings or parameters for the script's execution.
+4. **Create DataDictionary Instance**: An instance of the `DataDictionary` class is created, which will be used to store and manage the parsed data.
+5. **Read Excel Workbook**: The script reads an Excel workbook from the provided file input. This workbook contains the data needed to build the data dictionary.
+6. **Create Panda DataFrame for Worksheet**: A Pandas DataFrame is created for a specific worksheet within the Excel file to simplify the data manipulation and extraction process.
+7. **Create Entity from Worksheet Name**: An entity is created based on the worksheet name. The worksheet's name serves as an identifier or category for the data being extracted.
+8. **Iterate Over DataFrame Rows**: The script iterates over each row in the DataFrame to process the data row-by-row.
+9. **Row contains valid data?**: This decision point checks if the current row contains valid data that can be processed further.
+10. **Create Attribute from Row**: If the row contains valid data, an attribute is created from the information in the row for association with an entity.
+11. **Add Attribute to Entity**: The created attribute is added to the corresponding entity, effectively organizing data within the entity.
+12. **Skip Row**: If the row does not contain valid data, it is skipped and not processed further.
+13. **Add Entity to DataDictionary**: After all attributes are processed for the current worksheet, the entity is added to the `DataDictionary`, building a structured dataset.
+14. **Write DataDictionary to JSON**: The complete `DataDictionary` object is written to a JSON file, allowing easy access and export of the structured data.
+15. **End Script**: This marks the end of the script execution, concluding the process flow and outputting the results.
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Script as create_data_dictionary_from_excel.py
+    participant Config as Configuration
+    participant Excel as ExcelWorkbook
+    participant DataDict as DataDictionary
+    participant Entity as Entity
+    participant Attribute as Attribute
+    participant JSON as JSONFile
+
+    User->>Script: Start Script
+    Script->>Config: Get Config Details
+    Config-->>Script: Return Config Details
+    Script->>Excel: Read Excel Workbook
+    Excel-->>Script: Return Sheet Data
+    Script->>DataDict: Create DataDictionary Instance
+    Script->>Excel: Create Panda DataFrame
+    Script->>Entity: Create Entity from Worksheet Name
+    Script->>Excel: Iterate Over DataFrame Rows
+    
+    loop For Each Row
+        Script->>Attribute: Create Attribute from Row
+        Attribute-->>Entity: Add Attribute to Entity
+    end
+    
+    Entity-->>DataDict: Add Entity to DataDictionary
+    Script->>JSON: Write DataDictionary to JSON
+    Script->>User: Output DataDictionary
+    User-->>Script: End Script
+```
+
+<!--
+https://www.plantuml.com/plantuml/png/xPbHazes4CVV-HHRdY_C7KsRz9xYWCAv2OOQqIaj6O_EB5Z1I8maSg6TVFTwmoL6LmzZsfjS4_9cx_vbv9-atR-7PzO9uzvOhHhVkGnN2DUvI9UFbaekCjVugm7Gx8OT7WwY89uaKT1dpKjeZaT1s4swmecaArCdjH9csppxe6QZJXmEQSGd9P0IIYNCjO61GeZGtMYp1Bkr3bSj09v92mwjWnaDIRLoGYeBtmCg9vr42pVIPM3nBHgHWt3EoEkDA-8eqgnrEuU0iwJ78XON5rsQHlky_VZHHVlHnK_yl7rv_kIo_KEh_RJz-CcFkn4i-ZMC1r6VHPpaGPxlugF1EEwmv4NuYesAn1z5h8XsBgVJiKLZfzFkLH3pVX0LLphTh52v8ZWqUc74QYNLehZPffamgoBs1bFAti4sdKgrthXaBdCiickTMB5QvzXwbzjtpGR0wziPyf27UxEWjG7uc9aa8RqetR1u68SZrZpp1ENYLKdkh1fJ3itQI8ixxjiMGA1WBqpBb24ulOOSts8EUau169Y5KF9FGIy7LnADC6csBNzeD7x-C-lm98XPGB_K5zQX0M9IYkwi1YMXXmgDeCUMke3pE7m-vdjKziducdy0ei1PjTH7vOkhYGLWDyReXN08IzmMB8G3EIDwSzgrGitsy7cFgi6a7XT_VW4F4ZuPCbA64VUp_U2tv1MBUlogIAjDddlPcFqo3kFToPdu0r-ooGVOpU7BvkjFYVTdHyCdnFNn-_Ag1U0PWX8hlDs83mXxnECmwXtWVT5-sZe_5hW7koxaVKRrMVkZ3YEVeKsDN1EIZ-JB9trXvACQvEjiyrt_wSICkiyXxeUrFct2W7TsDjm82wd18ZFxtAnftl--ffH8Rwy8CW4-qDe6SI-8mjy30bBPt2f4rIYz9bNTu4hhSG7Qm4eRlxVPrl-XfrMGgT7LFFazz3Mzn-LKEvl7b40VjGZ7TZSF-TVNtnxOoSsrGRbGvNxFfLfQS1h4VeaulcJG02y4rvXhjQ1dWrQuEqqgtzBDrsKNN_pNGrNNozGOLylDVAQJzitFU0UYlgFXHYWhKXfq2GCpGmDzeSG2wHlyY_Kuev1NVxXxoUgoDP8EzmkAK3vQAYu6rmOjAcT1m3hRMfcA77ATUYWUrDAK86gKTPBTXuKXTgTcNJpK1BGExEEj2g4zLOj2nEetBbz_RCFoU9zeexhV3w7wjj2lj1K-hy8QqZhPqtDsz-yelZcA1bszRpn3DQE_Slu6
+-->
+<!--
+
+```plantuml
+@startjson
+!theme black-knight
+{
+  "DICTIONARY_NAME": "USAID_Data_Dictionary",
+  "DESCRIPTION": "USAID Data Dictionary for One Network system.  This test data contains 3 entities with several attributes each.",
+  "DATE_GENERATED": "2024-12-19T02:07:25.282476",
+  "ENVIRONMENT": "All",
+  "SOURCE_FILES": [
+    "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx"
+  ],
+  "ENTITIES": [
+    {
+      "ENTITY_ID": "ENTERPRISE",
+      "ENTITY_NAME": "ENTERPRISE",
+      "DESCRIPTION": "Enterprise entity.  An Enterprise is the top level of the Organization Hierarchy",
+      "SUBJECT_AREA": "Master Data",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_ID",
+          "ATTRIBUTE_NAME": "ENTERPRISE_ID",
+          "DESCRIPTION": "A surrogate key that identifies and Enterprise",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_NAME",
+          "ATTRIBUTE_NAME": "ENTERPRISE_NAME",
+          "DESCRIPTION": "The name of the Enterprise",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "KEYS": []
+        },
+{
+          "ATTRIBUTE_ID": "ENTERPRISE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ENTERPRISE_DESCRIPTION",
+          "DESCRIPTION": "The description of the ENTERPRISE",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "N",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Enterprise was created",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATE",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y"
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "ORGANIZATION",
+      "ENTITY_NAME": "ORGANIZATION",
+      "DESCRIPTION": "Organization entity.  An Enterprise contains 1 or more Organizations.",
+      "SUBJECT_AREA": "Master Data",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "A surrogate key that identifies and organization",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_NAME",
+          "ATTRIBUTE_NAME": "ORGANIZATION_NAME",
+          "DESCRIPTION": "The name of the organization",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_ID",
+          "ATTRIBUTE_NAME": "ENTERPRISE_ID",
+          "DESCRIPTION": "A foreign key that links to an Enterprise.  An Enterprise contains 1 or more Organizations.  An Organization belongs to one and only one Enterprise",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["FK"]
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ORGANIZATION_DESCRIPTION",
+          "DESCRIPTION": "The description of the organization",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "N",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Organization was created",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATE",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y"
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "SITE",
+      "ENTITY_NAME": "SITE",
+      "DESCRIPTION": "A Site belongs to an Organization and represents a physical location",
+      "SUBJECT_AREA": "Master Data",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "SITE_ID",
+          "ATTRIBUTE_NAME": "SITE_ID",
+          "DESCRIPTION": "A surrogate key that identifies and Site",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["PK"]
+        },
+        {
+          "ATTRIBUTE_ID": "SITE_NAME",
+          "ATTRIBUTE_NAME": "SITE_NAME",
+          "DESCRIPTION": "The name of the Site",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "SITE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "SITE_DESCRIPTION",
+          "DESCRIPTION": "The description of the Site",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "N",
+          "KEYS": []
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "A foreign key that links to an Organization.  An Organization contains 1 or more Sites",
+          "SUBJECT_AREA": "Master Data",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "KEYS": ["FK"]
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date the Organization was created",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATE",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y"
+        }
+      ]
+    }
+  ]
+}
+@endjson
+```
+-->
+
+```mermaid
+flowchart LR
+    subgraph subgraph1
+        direction TB
+        top1[top] --> bottom1[bottom]
+    end
+    subgraph subgraph2
+        direction TB
+        top2[top] --> bottom2[bottom]
+    end
+    %% ^ These subgraphs are identical, except for the links to them:
+
+    %% Link *to* subgraph1: subgraph1 direction is maintained
+    outside --> subgraph1
+    %% Link *within* subgraph2:
+    %% subgraph2 inherits the direction of the top-level graph (LR)
+    outside ---> top2
+```
+
+
+```mermaid
+flowchart TB
+    subgraph A
+        direction TB
+        top1[top] --> bottom1[bottom]
+    end
+```
+
+```mermaid
+flowchart TD
+    A["Start Script"] --> B["Process Command Line\n Arguments (if any)"]
+    B --> C["Get Config Details from conf/data_dictionary.conf"]
+    C --> D["read_in_data_dictionary \n Create DataDictionary Instance"]
+    D --> E["Read Excel Workbook"]
+    E --> F["Create Panda DataFrame for Worksheet"]
+    F --> G["Create Entity from Worksheet Name"]
+    G --> H["Iterate Over DataFrame Rows"]
+    H --> I{"Row contains valid data?"}
+    I -->|Yes| J["Create Attribute from Row"]
+    J --> K["Add Attribute to Entity"]
+    I -->|No| L["Skip Row"]
+    K --> M["Add Entity to DataDictionary"]
+    M --> N["Write DataDictionary to JSON"]
+    N --> O["End Script"]
+    A_NOTE["Note next to A"]
+    A --> A_NOTE
+    READ_IN_DD["read in data dictionary"]
+```
+
+```mermaid
+flowchart TD
+%% Nodes
+    A("create_data_dictionary_from_excel.py")
+    B("main")
+    C("create_markdown_files")
+    D("read_in_data_dictionary")
+    dd_1.write_data_dictionary(dd_output_file)
+    dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
+
+%% Edge connections between nodes
+%%    A --> B --> C --> B2 & D & n2
+%%    D -- Build and Design --> E --> F
+%%    D -- Use AI --> G --> H
+%%    D -- Mermaid js --> I --> J
+
+%% Individual node styling. Try the visual editor toolbar for easier styling!
+    style E color:#FFFFFF, fill:#AA00FF, stroke:#AA00FF
+    style G color:#FFFFFF, stroke:#00C853, fill:#00C853
+    style I color:#FFFFFF, stroke:#2962FF, fill:#2962FF
+
+%% You can add notes with two "%" signs in a row!
+```
+
+```plantuml
+@startuml
+title Activity Diagram/Flow Chart/Graph that has notes 
+start
+:action 1;
+note right
+  This note is on several lines
+  ....
+  //This line is in italics//
+  ----
+  This one contains som <b>HTML</b>
+  ====
+  * This line contains a bullet
+  ____
+  "" This line is in code block""
+end note
+
+:action 2;
+floating note right: This is a floating note
+
+partition "Some partition" {
+  :action 3;
+  note
+  Notes can be put 
+  into **partitions**
+  end note
+}
+
+stop
+
+@enduml
+
+```
+
+```mermaid
+---
+title: Sequence Diagram - Creating Data Dictionary From JSON Test data
+---
+sequenceDiagram
+    autonumber
+    participant Script as create_data_dictionary_from_excel.py
+    participant JSONTestData as TestData
+    participant Entity as Entity
+    participant Attribute as Attribute
+    participant DataDictionary as DataDictionary
+
+```
+
+```
+sequenceDiagram
+    autonumber
+    participant Script as create_data_dictionary_from_excel.py
+    participant TestData as TestData
+    participant ExcelWorkbook as ExcelWorkbook
+    participant DataDictionary as DataDictionary
+
+    Script-->ExcelWorkbook: Create ExcelWorkbook instance
+    Script-->ExcelWorkbook: Read Excel file
+    ExcelWorkbook-->>Script: Return sheet data
+
+    Script->>DataDictionary: Create DataDictionary instance
+    Script->>DataDictionary: Parse data into EntityData and AttributeData
+    DataDictionary-->>Script: Return DataDictionary object
+```
+To create a flowchart for the `create_data_dictionary_from_excel.py` script, we need to outline the main steps and processes involved in the script. Based on the provided sequence diagram and script details, here's a flowchart representation:
+
+```mermaid
+flowchart TD
+    A[Start Script] --> B[Process Command Line Arguments]
+    B --> C[Get Config Details from conf/data_dictionary.conf]
+    C --> D[Create DataDictionary Instance]
+    D --> E[Read Excel Workbook]
+    E --> F[Create Panda DataFrame for Worksheet]
+    F --> G[Create Entity from Worksheet Name]
+    G --> H[Iterate Over DataFrame Rows]
+    H --> I[Create Attribute for Each Row]
+    I --> J[Add Attribute to Entity]
+    J --> K{All Rows Processed?}
+    K -- Yes --> L[Add Entity to DataDictionary]
+    L --> M[Write DataDictionary to JSON File]
+    M --> N[Output DataDictionary]
+    N --> O[End Script]
+    K -- No --> H
+```
+
+### Explanation:
+- **Start Script**: The script begins execution.
+- **Process Command Line Arguments**: The script processes any command line arguments provided.
+- **Get Config Details**: Configuration details are fetched from the `conf/data_dictionary.conf` file.
+- **Create DataDictionary Instance**: A new instance of `DataDictionary` is created.
+- **Read Excel Workbook**: The Excel workbook is read to extract data.
+- **Create Panda DataFrame for Worksheet**: A DataFrame is created for the worksheet specified in the config file.
+- **Create Entity from Worksheet Name**: An entity is created based on the worksheet's name.
+- **Iterate Over DataFrame Rows**: The script iterates over each row in the DataFrame.
+- **Create Attribute for Each Row**: For each row, an attribute is created.
+- **Add Attribute to Entity**: The created attribute is added to the entity.
+- **All Rows Processed?**: A check to see if all rows have been processed.
+  - If **Yes**, proceed to add the entity to the DataDictionary.
+  - If **No**, continue iterating over the rows.
+- **Add Entity to DataDictionary**: The entity is added to the DataDictionary.
+- **Write DataDictionary to JSON File**: The DataDictionary is written to a JSON file.
+- **Output DataDictionary**: The final DataDictionary is outputted.
+- **End Script**: The script ends.
+
+This flowchart provides a high-level overview of the script's process flow. If you need further details or modifications, feel free to ask!
 
 ## Use Cases/Stories/Epics/Key Processes
 
@@ -129,11 +642,6 @@ sequenceDiagram
 
     Script->>User: Output DataDictionary
 ```
-
-## Process Flow
-
-### Processing an Excel worksheet containing Entity/Attribute definitions
-
 
 ## Project Organization
 
@@ -428,14 +936,6 @@ The ExcelWorkbook class uses the ExcelTable class to manage tables within each w
 
 This interaction allows users to handle both the workbook as a whole and its individual tables, providing a structured and organized way to work with Excel data.
 
-## To Do Items to Update this Python Template
-
-- [ ] Add directions to README.md to create documentation.
-- [ ] Add directions/notes for adding comment headers/blocks
-- [ ] Add link/note to wiki page related to commenting Python code.
-- [ ] Add Documentation regarding creating/running tests.
-- [ ] Add descriptions for folders/files included in template to README.
-
 ## Generating/Updating Documentation
 
 1. Running processes to update docs/ folder.
@@ -465,49 +965,6 @@ erDiagram
       int	SYS_ENT_ID
       string APPT_SCHEDULING_SYSTEM
     }
-```
-
-```plantuml
-@startuml
-
-actor "Developer" <<User>> as ADEV
-actor "Expert" <<User>> as AEXPR
-actor "Maintainer" <<User>> as ADEVOP
-actor "Subscriber" <<User>> as ASUBSCR
-actor "Workforce" <<User>> as AWF
-
-component "Designer" <<Application>> as CQD
-component "Runner" <<Application>> as CQR
-component "MailServer" <<Software System>> as CMB
-
-usecase (Provides new versions) as UC1
-usecase (Updates quizzes content) as UC2
-usecase (Exports updated quizzes) as UC3
-usecase (Sends updated quizzes to subscribers) as UC4
-usecase (Receives updated quizzes) as UC5
-usecase (Add updated quizzes) as UC6
-usecase (Passes quizzes) as UC7
-usecase (Checks quiz results) as UC8
-
-ADEV -down-> UC1
-UC1 -left-> CQD
-UC1 -> CQR
-AEXPR -down-> UC2
-UC2 -down-> CQD
-UC3 -up-> CQD
-ADEVOP -up-> UC3
-ADEVOP -> UC4
-UC4 -right-> CMB
-ASUBSCR -down-> UC5
-UC5 -down-> CMB
-ASUBSCR -up-> UC6
-UC6 -up-> CQR
-UC7 -down-> CQR
-AWF -down-> UC7
-UC8 -left-> CQR
-ASUBSCR -up-> UC8
-
-@enduml
 ```
 
 ```plantuml

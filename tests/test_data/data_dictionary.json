@@ -10,7 +10,7 @@
     {
       "ENTITY_ID": "ENTERPRISE",
       "ENTITY_NAME": "ENTERPRISE",
-      "DESCRIPTION": "Enterprise entity.  An Enterprise is the top level of the Orgnization Hierarchy",
+      "DESCRIPTION": "Enterprise entity.  An Enterprise is the top level of the Organization Hierarchy",
       "SUBJECT_AREA": "Master Data",
       "ENVIRONMENT": "Data Generation",
       "ATTRIBUTES": [
@@ -62,7 +62,7 @@
     {
       "ENTITY_ID": "ORGANIZATION",
       "ENTITY_NAME": "ORGANIZATION",
-      "DESCRIPTION": "Organization entity.  An Enterprise contains 1 or more Orgnizations.",
+      "DESCRIPTION": "Organization entity.  An Enterprise contains 1 or more Organizations.",
       "SUBJECT_AREA": "Master Data",
       "ENVIRONMENT": "Data Generation",
       "ATTRIBUTES": [
@@ -125,7 +125,7 @@
     {
       "ENTITY_ID": "SITE",
       "ENTITY_NAME": "SITE",
-      "DESCRIPTION": "Site entity",
+      "DESCRIPTION": "A Site belongs to an Organization and represents a physical location",
       "SUBJECT_AREA": "Master Data",
       "ENVIRONMENT": "Data Generation",
       "ATTRIBUTES": [

@@ -28,10 +28,6 @@ from typing import List
 import json
 from datetime import datetime, date
 from pathlib import Path
-import re
-import mdutils
-from mdutils.tools.Header import Header
-from model import constants
 
 #: This effectively defines the root of this project and so adding ..\, etc is not needed in config files
 PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -42,6 +38,8 @@ sys.path.insert(0, PROJECT_ROOT_DIR)
 #: Directory that contains configuration files
 CONF_DIR = os.path.join(PROJECT_ROOT_DIR, 'conf')
 
+tab_separator = "\t"
+comma_separator = ", "
 
 # import any functions inside or outside of this module.  If no helpers are needed it can be removed from here
 # as well as remove the file from the excel_workbook module.
@@ -436,96 +434,6 @@ class DataDictionary:
         # print(str(json_formatted_str))
         with open(out_filename, 'w') as json_out_handle:
             json.dump(out_dictionary, json_out_handle, indent=2, default=json_serial, separators=(',', ': '))
-
-    def create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False) -> None:
-        """Creates a hierarchy of markdown formatted files based on the contents in the data dictionary
-
-        These markdown files will include links that allow for navigation.
-
-        Args:
-            force_overwrite (bool): If True, this will overwrite any existing markdown files.
-            markdown_output_dir (Path): The directory that is the root directory to store the created markdown files.
-
-        """
-        logging.info("Creating markdown files in location [%s]...", str(markdown_output_dir))
-        if Path(markdown_output_dir).is_dir():
-            if self.is_empty_dir(markdown_output_dir) and not force_overwrite:
-                logging.error("File already exists and force_overwrite set to False: [%s]", str(markdown_output_dir))
-                raise FileExistsError
-        root_file_name = re.sub(r"\s", "_", self.name.lower()) + ".md"
-        root_file_full_path = markdown_output_dir / root_file_name
-        logging.info("Creating root file: [%s]", str(root_file_full_path))
-        md_file = mdutils.MdUtils(file_name=str(root_file_full_path))
-        md_file.new_header(level=1, title=self.name)
-        # Now create a summary of the entities contained in this DD
-        for entity in self.entities:
-            header_title=Header.header_anchor(entity.name)
-            md_file.new_header(level=2, title=header_title)
-            md_file.new_line(entity.description)
-            md_file.new_line()
-            md_file.write("Subject Area:", bold_italics_code='b', color="green")
-            md_file.write(" " + entity.subject_area)
-            md_file.new_line()
-            md_file.write("Environment:", bold_italics_code='b', color="green")
-            md_file.write(" " + entity.environment)
-            md_file.new_line()
-            attribute_rows = list(constants.MARKDOWN_ATTRIBUTE_HEADER_ROW)
-            attribute_row_count = len(entity.attributes)+1
-            for attribute in entity.attributes:
-                logging.info("Adding Attribute to Markdown file:[%s]", attribute.name)
-                attribute_rows.extend([attribute.name,
-                                       attribute.description,
-                                       attribute.data_type,
-                                       attribute.required])
-
-            # list_of_strings = ["Items", "Descriptions", "Data"]
-            # for x in range(5):
-            #     list_of_strings.extend(["Item " + str(x), "Description Item " + str(x), str(x)])
-            #
-            # print(str(list_of_strings))
-            # print("length list of strings:" + str(len(list_of_strings)))
-            # print(str(attribute_rows))
-            # print("length of attribute_rows:" + str(len(attribute_rows)))
-            # print(str(attribute_row_count))
-            md_file.new_table(columns=len(constants.MARKDOWN_ATTRIBUTE_HEADER_ROW), rows=attribute_row_count, text=attribute_rows, text_align='left')
-
-
-        # add_paragraph(md_file, "Adding text")
-        md_file.new_table_of_contents(table_title='Contents', depth=2)
-        md_file.create_md_file()
-        # TODO: After writing markdown file, go through and remove extra blank lines after headers.  See below
-        # # Post-process to remove extra blank lines
-        # with open('test.md', 'r') as f:
-        #     content = f.read()
-        #
-        # content = content.replace('\n\n\n', '\n\n')
-        #
-        # with open('test.md', 'w') as f:
-        #     f.write(content
-
-        # dd_source_files = list()
-        # for source_file in self.source_files:
-        #     dd_source_files.append(str(source_file))
-        # entities_list = list()
-        # for entity in self.entities:
-        #     entities_list.append(entity.to_dict())
-        # out_dictionary = dict(DICTIONARY_NAME=self.name,
-        #                       DESCRIPTION=self.description,
-        #                       DATE_GENERATED=datetime.now(),
-        #                       ENVIRONMENT=self.environment,
-        #                       SOURCE_FILES=dd_source_files,
-        #                       ENTITIES=entities_list)
-        # # json_formatted_str = json.dumps(out_dictionary, default=json_serial, indent=2, separators=(',', ': '))
-        # # print(str(json_formatted_str))
-        # with open(out_filename, 'w') as json_out_handle:
-        #     json.dump(out_dictionary, json_out_handle, indent=2, default=json_serial, separators=(',', ': '))
-
-    @staticmethod
-    def is_empty_dir(path):
-        path = Path(path)
-        if not path.is_dir():
-            return False  # Not a directory
-        return not any(path.iterdir())
 
     def get_entities(self) -> list[Entity]:
         logging.info("Getting entities")
