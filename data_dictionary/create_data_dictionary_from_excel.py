@@ -2,6 +2,8 @@
 
 This script data from an Excel workbook to create a data dictionary object.
 
+TODO: Add function to confirm which row contains the headers for the Entity/Attributes.
+
 """
 
 import argparse
@@ -23,65 +25,6 @@ coloredlogs.install(level=logging.DEBUG,
                     datefmt='%H:%M:%S')
 
 
-def get_all_tables(filename):
-    """ Get all tables from a given workbook. Returns a dictionary of tables.
-        Requires a filename, which includes the file path and filename.
-
-    Args:
-        filename (str): The Excel filename
-
-    Returns:
-        object:
-    """
-
-    # Load the workbook, from the filename, setting read_only to False
-    wb = load_workbook(filename=filename, read_only=False, keep_vba=False, data_only=True, keep_links=False)
-
-    # Initialize the dictionary of tables
-    tables_dict = {}
-
-    # Go through each worksheet in the workbook
-    for ws_name in wb.sheetnames:
-        print("")
-        print(f"worksheet name: {ws_name}")
-        ws = wb[ws_name]
-        print(f"tables in worksheet: {len(ws.tables)}")
-
-        # Get each table in the worksheet
-        for tbl in ws.tables.values():
-            print(f"table name: {tbl.name}")
-            # First, add some info about the table to the dictionary
-            tables_dict[tbl.name] = {
-                'table_name': tbl.name,
-                'worksheet': ws_name,
-                'num_cols': len(tbl.tableColumns),
-                'table_range': tbl.ref}
-
-            # Grab the 'data' from the table
-            data = ws[tbl.ref]
-
-            # Now convert the table 'data' to a Pandas DataFrame
-            # First get a list of all rows, including the first header row
-            rows_list = []
-            for row in data:
-                print(str(row))
-                # Get a list of all columns in each row
-                cols = []
-                for col in row:
-                    cols.append(col.value)
-                rows_list.append(cols)
-
-            # Create a pandas dataframe from the rows_list.
-            # The first row is the column names
-            df = pd.DataFrame(data=rows_list[1:], index=None, columns=rows_list[0])
-            print(str(df))
-
-            # Add the dataframe to the dictionary of tables
-            tables_dict[tbl.name]['dataframe'] = df
-
-    return tables_dict
-
-
 def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary: dd):
     """Creates Entity object from an Excel Worksheet and adds it to the data dictionary
 
@@ -99,7 +42,8 @@ def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary
     """
     logging.info("Creating entities from excel worksheet")
     excel_poib_data = pd.read_excel(spreadsheet_file,
-                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(np.nan, None)
+                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
+        np.nan, None)
     entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
                        description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
                        subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
@@ -107,19 +51,19 @@ def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary
                        )
     for row_label, row in excel_poib_data.iterrows():
         entity_attribute = dd.Attribute(
-            name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
-            description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
-            data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
+            name=constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name'],
+            description=constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description'],
+            data_type=constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type'],
             subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
             environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
-            max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']]
+            max_length=constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']
         )
         entity.add_attribute(entity_attribute)
     data_dictionary.add_entity(entity)
 
 
 def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
-    """
+    """Creates DataDictionary instance from a JSON file
 
     Args:
         data_dictionary_source_file (Path): Location of existing data dictionary JSON File.
@@ -131,13 +75,52 @@ def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
     return data_dict_from_json
 
 
-def create_markdown_files() -> None:
-    """Creates markdown files based on Data Dictionary objects
+def create_data_dictionary_from_json_file():
+    input_file_name: str = "po_sample.xlsx"
+    output_file_name: str = "data_dictionary.json"
+    dd_output_file: Path = constants.OUTPUT_FOLDER / output_file_name
 
-    Returns:
-        None
+    dd_1 = read_in_data_dictionary(constants.TEST_DATA_FILE)
+    dd_1.write_data_dictionary(dd_output_file)
+    dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
+
+
+def create_data_dictionary_from_config_data():
     """
-    pass
+
+    """
+    # create a base DataDictionary instance
+    data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
+                                  description="USAID Data Dictionary for One Network system",
+                                  subject_area="All",
+                                  environment="All"
+                                  )
+    for entity in constants.ENTITIES_SOURCES:
+        logging.info("entities source definition: [%s] excel file/worksheet: [%s] - [%s]",
+                     str(entity['entity_name']),
+                     entity['source_file_name'],
+                     entity['source_worksheet_name'])
+        new_entity = dd.Entity(name=entity['entity_name'],
+                           description=entity['description'],
+                           subject_area=entity['subject_area'],
+                           environment=entity['environment']
+                           )
+        excel_poib_data = pd.read_excel(entity['source_file_name'],
+                                        sheet_name=entity['source_worksheet_name']).replace(np.nan, None)
+        for row_label, row in excel_poib_data.iterrows():
+            logging.info("Row label: [%s] Row values: [%s]", str(row_label), str(row))
+            # entity_attribute = dd.Attribute(
+            #     name=entity['attribute_column_mapping']['name'],
+            #     description=entity['attribute_column_mapping']['description'],
+            #     data_type=entity['attribute_column_mapping']['data_type'],
+            #     subject_area=entity['subject_area'],
+            #     environment=entity['environment'],
+            #     max_length=entity['attribute_column_mapping']['max_length']
+            # )
+            # entity.add_attribute(entity_attribute)
+        # print entity defined and excel worksheet source for entity/attribute definitions
+        # create_entities_from_excel_worksheet(entity['source_file_name'], data_dict)
+
 
 def main():
     """The main method for this script.
@@ -174,12 +157,10 @@ def main():
         return header_row_out, first_col_out, last_col_out, source_file_name_out, source_worksheet_name_out
 
     (header_row, first_col, last_col, source_spreadsheet_file, source_worksheet_name) = get_configs(config_filename)
-    source_input_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'input_files'
-    output_filepath = Path.home() / 'Documents' / 'Programming' / 'PycharmProjects' / 'Data_Dictionary' / 'output_files'
     input_file_name = "po_sample.xlsx"
     output_file_name = "data_dictionary.json"
-    test_spreadsheet = source_input_filepath / input_file_name
-    dd_output_file = output_filepath / output_file_name
+    test_spreadsheet = constants.SOURCE_FOLDER / input_file_name
+    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
     data_dict = dd.DataDictionary(name="USAID_Data_Dictionary",
                                   description="USAID Data Dictionary for One Network system",
                                   subject_area="All",
@@ -192,14 +173,8 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    input_file_name = "po_sample.xlsx"
-    output_file_name = "data_dictionary.json"
-    test_spreadsheet = constants.SOURCE_FOLDER / input_file_name
-    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
-
-    dd_1 = read_in_data_dictionary(constants.TEST_DATA_FILE)
-    dd_1.write_data_dictionary(dd_output_file)
-    dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
+    # create_data_dictionary_from_json_file()
+    create_data_dictionary_from_config_data()
 
     # excel_poib_data = pd.read_excel(test_spreadsheet,
     #                                 sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
@@ -220,3 +195,60 @@ if __name__ == "__main__":
     #     )
     #     entity.add_attribute(entity_attribute)
     # data_dict.add_entity(entity)
+    # def get_all_tables(filename):
+    #     """ Get all tables from a given workbook. Returns a dictionary of tables.
+    #         Requires a filename, which includes the file path and filename.
+    #
+    #     Args:
+    #         filename (str): The Excel filename
+    #
+    #     Returns:
+    #         object:
+    #     """
+    #
+    #     # Load the workbook, from the filename, setting read_only to False
+    #     wb = load_workbook(filename=filename, read_only=False, keep_vba=False, data_only=True, keep_links=False)
+    #
+    #     # Initialize the dictionary of tables
+    #     tables_dict = {}
+    #
+    #     # Go through each worksheet in the workbook
+    #     for ws_name in wb.sheetnames:
+    #         print("")
+    #         print(f"worksheet name: {ws_name}")
+    #         ws = wb[ws_name]
+    #         print(f"tables in worksheet: {len(ws.tables)}")
+    #
+    #         # Get each table in the worksheet
+    #         for tbl in ws.tables.values():
+    #             print(f"table name: {tbl.name}")
+    #             # First, add some info about the table to the dictionary
+    #             tables_dict[tbl.name] = {
+    #                 'table_name': tbl.name,
+    #                 'worksheet': ws_name,
+    #                 'num_cols': len(tbl.tableColumns),
+    #                 'table_range': tbl.ref}
+    #
+    #             # Grab the 'data' from the table
+    #             data = ws[tbl.ref]
+    #
+    #             # Now convert the table 'data' to a Pandas DataFrame
+    #             # First get a list of all rows, including the first header row
+    #             rows_list = []
+    #             for row in data:
+    #                 print(str(row))
+    #                 # Get a list of all columns in each row
+    #                 cols = []
+    #                 for col in row:
+    #                     cols.append(col.value)
+    #                 rows_list.append(cols)
+    #
+    #             # Create a pandas dataframe from the rows_list.
+    #             # The first row is the column names
+    #             df = pd.DataFrame(data=rows_list[1:], index=None, columns=rows_list[0])
+    #             print(str(df))
+    #
+    #             # Add the dataframe to the dictionary of tables
+    #             tables_dict[tbl.name]['dataframe'] = df
+    #
+    #     return tables_dict

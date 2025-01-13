@@ -20,7 +20,7 @@ CONF_DIR = PROJECT_ROOT_DIR / 'conf'
 # CONF_DIR = PROJECT_ROOT_DIR
 
 #: Directory were data files/extracts/reports will be stored
-DATA_DIR = PROJECT_ROOT_DIR /  'data'
+DATA_DIR = PROJECT_ROOT_DIR / 'data'
 
 #: Directory were output files can be stored
 OUTPUT_DIR = PROJECT_ROOT_DIR / 'output'
@@ -68,23 +68,62 @@ dict1 = {0: 'a', 1: 'b', 2: 'c', 3: 'd'}
 #        'Distribution Order', 'Repleneshiment Order', 'Format', 'Max Length',
 #        'Description']
 
-SOURCE_DATA_DICT_MAPPING = {
-    'source_worksheet_name': 'PurchaseOrder_IB',
-    'entity_name': "PURCHASE_ORDER_IB",
-    'subject_area': "Transaction: Order Management",
-    'environment': "Data Generation",
-    'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
-    # worksheet columns are mapped to DataDictionary, Entity and Attribute class property. e.g. 'Field Name' maps to Attribute.name
-    'attribute_column_mapping': {
-        'name': "Field Name",
-        'data_type': "Field Type",
-        'required': "Required",
-        'description': "Description",
-        'max_length': "Max Length",
-        'mask': "Format"
-    }
-}
+SOURCE_DATA_DICT_MAPPING = dict(source_worksheet_name='OMS.SalesOrder_IBv4.0',
+                                entity_name="OMS_SALES_ORDER",
+                                subject_area="Transaction: Order Management",
+                                environment="Data Generation",
+                                source_file_name="C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\AllUSAIDInterfaces-Release Date -11-15-2024.xlsx",
+                                attribute_column_mapping={
+                                    'name': "Field Name",
+                                    'data_type': "Field Type",
+                                    'required': "Required",
+                                    'description': "Description",
+                                    'max_length': "Max Length",
+                                    'mask': "Format"
+                                })
 
+# An array of dictionary items that define sources for Data Dictionary information.
+ENTITIES_SOURCES = [
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="OMS_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="OMS Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+    ,
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="HCPT_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="HCPT Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+]
+
+#     dict(SOURCE_FILES=
+# [
+#     dict(FILE_NAME=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+#          SHEET_NAME='HCPT.SalesOrder_IBv1.0'),
+#     dict(FILE_NAME=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+#          SHEET_NAME='OMS.SalesOrder_IBv4.0')
+# ]
+# ))
+
+# HCPT.SalesOrder_IBv1.0
+# OMS.SalesOrder_IBv4.0
 # TODO: Include DW Schema spreadsheet
 SOURCE_SPREADSHEETS = [SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
                        SOURCE_FOLDER / 'SCCT Enterprise Mapping Document 20240813.xlsx',

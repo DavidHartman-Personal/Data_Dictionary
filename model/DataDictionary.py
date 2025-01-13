@@ -104,8 +104,8 @@ class Attribute:
         self.environment = environment
         self.data_type = data_type
         self._attribute_id = str(name).upper()
-        if len(parent_entity_attributes) != 0:
-            logging.info("Attribute contains foreign keys.  Checking that Entity and Attribute exist")
+        # if len(parent_entity_attributes) != 0:
+        #     logging.info("Attribute contains foreign keys.  Checking that Entity and Attribute exist")
 
     def to_dict(self):
         attribute_dict = dict(ATTRIBUTE_ID=self._attribute_id,
@@ -445,6 +445,19 @@ class DataDictionary:
         Args:
             force_overwrite (bool): If True, this will overwrite any existing markdown files.
             markdown_output_dir (Path): The directory that is the root directory to store the created markdown files.
+        Note: <details>
+                <summary>Expand contents</summary>
+
+                - [Enterprise](#Enterprise)
+                - [Examples](#examples)
+                - [Release](#release)
+                - [Related projects](#related-projects)
+                - [Contributors](#contributors---)
+                - [Security and safe diagrams](#security-and-safe-diagrams)
+                - [Reporting vulnerabilities](#reporting-vulnerabilities)
+                - [Appreciation](#appreciation)
+
+                </details>
 
         """
         logging.info("Creating markdown files in location [%s]...", str(markdown_output_dir))
@@ -458,10 +471,16 @@ class DataDictionary:
         md_file = mdutils.MdUtils(file_name=str(root_file_full_path))
         md_file.new_header(level=1, title=self.name)
         # Now create a summary of the entities contained in this DD
+        details_expand_text = "<details>\n\n" + "<summary>Expand contents</summary>\n\n"
+        for entity in self.entities:
+            details_expand_text += "[{}](#{})\n\n".format(entity.name, entity.name)
+        details_expand_text += "</details>\n\n"
+        md_file.write(details_expand_text)
         for entity in self.entities:
             header_title=Header.header_anchor(entity.name)
             md_file.new_header(level=2, title=header_title)
-            md_file.new_line(entity.description)
+            md_file.write("Description:", bold_italics_code='b', color="green")
+            md_file.write(" " + entity.description)
             md_file.new_line()
             md_file.write("Subject Area:", bold_italics_code='b', color="green")
             md_file.write(" " + entity.subject_area)
@@ -491,7 +510,7 @@ class DataDictionary:
 
 
         # add_paragraph(md_file, "Adding text")
-        md_file.new_table_of_contents(table_title='Contents', depth=2)
+        #md_file.new_table_of_contents(table_title='Contents', depth=2)
         md_file.create_md_file()
         # TODO: After writing markdown file, go through and remove extra blank lines after headers.  See below
         # # Post-process to remove extra blank lines

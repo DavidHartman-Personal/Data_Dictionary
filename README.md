@@ -3,29 +3,32 @@
 A Data Dictionary data class set of resources and code.
 
 - [ ] Add details for each script/module/class/config/etc. into this file
-  - DataDictionary Classes
-  - create_data_dictionary_from_excel script
-  - Configuration files
-  - DataDictionary exports (JSON, etc.)
+    - DataDictionary Classes
+    - create_data_dictionary_from_excel script
+    - Configuration files
+    - DataDictionary exports (JSON, etc.)
 - [x] Create function that reads in an existing Data Dictionary JSON file.
 - [ ] Create sample data for PSM For Sales Order/Delivery
 
 ## Process for Loading Data Dictionary
 
-The below high level steps describe the process for identifying and loading Data Dictionary Data and the process for generating sample data
+The below high level steps describe the process for identifying and loading Data Dictionary Data and the process for
+generating sample data
 
 1. Identify source of Sales Order Test Data data element definitions
-2. Example sample data scenarios
-3. Identify all Parent entities defined in the Sales Order definition
-4. Sample data generation order
-5. Ensuring FK/PK relationships for child entities in sample data
-6. Using created markdown/confluence page to extract seed data (e.g. Enterprise) from Confluence page, etc. if available.
-7. Excel Entity/Attribute definitions should also identify the Process Flows that interact with for each Entity/Attribute
-
+2. Create Script used to Extract Sales Order metadata
+3. Example sample data scenarios
+4. Identify all Parent entities defined in the Sales Order definition
+5. Sample data generation order
+6. Ensuring FK/PK relationships for child entities in sample data
+7. Using created markdown/confluence page to extract seed data (e.g. Enterprise) from Confluence page, etc. if
+   available.
+8. Excel Entity/Attribute definitions should also identify the Process Flows that interact with for each
+   Entity/Attribute
 
 ### Identify source of Sales Order Test Data data element definitions
 
-See table below for details related to metadata available related to Sales Orders.  
+See table below for details related to metadata available related to Sales Orders.
 
 | Attribute Name                                                            | Column Name                     | Description                                                                           |
 |:--------------------------------------------------------------------------|:--------------------------------|:--------------------------------------------------------------------------------------|
@@ -42,41 +45,87 @@ See table below for details related to metadata available related to Sales Order
 
 ### Script used to Extract Sales Order metadata
 
-The [extract_data_dictionary_information](./data_dictionary/extract_data_dictionary_information.py) script is used to extract details from spreadsheets, documents, files, etc. This includes a dictionary/JSON data structures that can be then used to extract other data dictionary related information.
+The [extract_data_dictionary_information](./data_dictionary/extract_data_dictionary_information.py) script is used to
+extract details from spreadsheets, documents, files, etc. The output of this script includes a dictionary/JSON data structures that can be then used to extract other data dictionary related information.
+The below are the high level steps this script performs:
+
+1. Read in JSON/Dictionary that identifies sources of Data Dictionary information.
+2. Each source of Data Dictionary information identifies the worksheet and which Entity it defines.
 
 ```json
 SOURCE_DATA_DICT_MAPPING = {
-    'source_worksheet_name': 'PurchaseOrder_IB',
-    'entity_name': "PURCHASE_ORDER_IB",
-    'subject_area': "Transaction: Order Management",
-    'environment': "Data Generation",
-    'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
-    # worksheet columns are mapped to DataDictionary, Entity and Attribute class property. e.g. 'Field Name' maps to Attribute.name
-    'attribute_column_mapping': {
-        'name': "Field Name",
-        'data_type': "Field Type",
-        'required': "Required",
-        'description': "Description",
-        'max_length': "Max Length",
-        'mask': "Format"
+  [ {
+        'source_worksheet_name': 'PurchaseOrder_IB',
+        'entity_name': "PURCHASE_ORDER_IB",
+        'subject_area': "Transaction: Order Management",
+        'environment': "Data Generation",
+        'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+        'attribute_column_mapping': {
+          'name': "Field Name",
+          'data_type': "Field Type",
+          'required': "Required",
+          'description': "Description",
+          'max_length': "Max Length",
+          'mask': "Format"
+        }
+    },
+    {
+        'source_worksheet_name': 'PurchaseOrder_IB',
+        'entity_name': "PURCHASE_ORDER_IB",
+        'subject_area': "Transaction: Order Management",
+        'environment': "Data Generation",
+        'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+        'attribute_column_mapping': {
+          'name': "Field Name",
+          'data_type': "Field Type",
+          'required': "Required",
+          'description': "Description",
+          'max_length': "Max Length",
+          'mask': "Format"
+        }
     }
+    ]
 }
+```
+
+```python
+dict(SOURCE_FILES=[
+    dict(FILENAME='FILENAME')],
+    source_worksheet_name='PurchaseOrder_IB',
+     entity_name="PURCHASE_ORDER_IB",
+     subject_area="Transaction: Order Management",
+     environment="Data Generation",
+     source_file_name="C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
+     attribute_column_mapping={
+         'name': "Field Name",
+         'data_type': "Field Type",
+         'required': "Required",
+         'description': "Description",
+         'max_length': "Max Length",
+         'mask': "Format"
+     })
 ```
 
 [//]: # (TODO: Create function that can print markdown text that can be pasted into documentation.  E.g. a table that lists the spreadsheet files, tabs, etc. that is built from the data structure created in the script above.)
 
-
 ```mermaid
 sequenceDiagram
-    %% A template for creating a mermaid sequence diagram
+%% A template for creating a mermaid sequence diagram
     autonumber
     participant User
     participant Script as extract_data_dictionary_information
-    %% Include additional components/participants/actors/scripts/etc. that are involved in the process
-    %% For example, Classes or modules that are required for the script 
-    participant AdditionalScriptParticipant
-    User->>Script: Initial call to start script
-    Script->>AdditionalScriptParticipant: A step in the script
+%% Include additional components/participants/actors/scripts/etc. that are involved in the process
+%% For example, Classes or modules that are required for the script 
+    participant DataDictionarySource
+    participant DataDictionary
+    participant Entity
+    participant Attribute
+    User ->> Script: Initial call to start script
+    loop Loop through Data Dictionary Sources
+        note right of DataDictionarySource: For each source we will <BR> extract Entity/Attribute details
+        DataDictionarySource ->> DataDictionarySource: Looping through Data Sources
+    end
+    
 ```
 
 ### Example sample data scenarios
@@ -91,25 +140,35 @@ sequenceDiagram
 
 ### Excel Entity/Attribute definitions should also identify the Process Flows that interact with for each Entity/Attribute
 
- 
-
 ## Current Processes
 
 Here's an explanation of each step in the flowchart for the `create_data_dictionary_from_excel.py` script:
+
 1. **Start Script**: This is the entry point of the script where execution begins.
-2. **Process Command Line Arguments**: The script processes any command line arguments provided by the user to customize the behavior or input/output of the script.
-3. **Get Config Details from conf/data_dictionary.conf**: This step involves reading configuration details from a specified configuration file, which likely contains settings or parameters for the script's execution.
-4. **Create DataDictionary Instance**: An instance of the `DataDictionary` class is created, which will be used to store and manage the parsed data.
-5. **Read Excel Workbook**: The script reads an Excel workbook from the provided file input. This workbook contains the data needed to build the data dictionary.
-6. **Create Panda DataFrame for Worksheet**: A Pandas DataFrame is created for a specific worksheet within the Excel file to simplify the data manipulation and extraction process.
-7. **Create Entity from Worksheet Name**: An entity is created based on the worksheet name. The worksheet's name serves as an identifier or category for the data being extracted.
+2. **Process Command Line Arguments**: The script processes any command line arguments provided by the user to customize
+   the behavior or input/output of the script.
+3. **Get Config Details from conf/data_dictionary.conf**: This step involves reading configuration details from a
+   specified configuration file, which likely contains settings or parameters for the script's execution.
+4. **Create DataDictionary Instance**: An instance of the `DataDictionary` class is created, which will be used to store
+   and manage the parsed data.
+5. **Read Excel Workbook**: The script reads an Excel workbook from the provided file input. This workbook contains the
+   data needed to build the data dictionary.
+6. **Create Panda DataFrame for Worksheet**: A Pandas DataFrame is created for a specific worksheet within the Excel
+   file to simplify the data manipulation and extraction process.
+7. **Create Entity from Worksheet Name**: An entity is created based on the worksheet name. The worksheet's name serves
+   as an identifier or category for the data being extracted.
 8. **Iterate Over DataFrame Rows**: The script iterates over each row in the DataFrame to process the data row-by-row.
-9. **Row contains valid data?**: This decision point checks if the current row contains valid data that can be processed further.
-10. **Create Attribute from Row**: If the row contains valid data, an attribute is created from the information in the row for association with an entity.
-11. **Add Attribute to Entity**: The created attribute is added to the corresponding entity, effectively organizing data within the entity.
+9. **Row contains valid data?**: This decision point checks if the current row contains valid data that can be processed
+   further.
+10. **Create Attribute from Row**: If the row contains valid data, an attribute is created from the information in the
+    row for association with an entity.
+11. **Add Attribute to Entity**: The created attribute is added to the corresponding entity, effectively organizing data
+    within the entity.
 12. **Skip Row**: If the row does not contain valid data, it is skipped and not processed further.
-13. **Add Entity to DataDictionary**: After all attributes are processed for the current worksheet, the entity is added to the `DataDictionary`, building a structured dataset.
-14. **Write DataDictionary to JSON**: The complete `DataDictionary` object is written to a JSON file, allowing easy access and export of the structured data.
+13. **Add Entity to DataDictionary**: After all attributes are processed for the current worksheet, the entity is added
+    to the `DataDictionary`, building a structured dataset.
+14. **Write DataDictionary to JSON**: The complete `DataDictionary` object is written to a JSON file, allowing easy
+    access and export of the structured data.
 15. **End Script**: This marks the end of the script execution, concluding the process flow and outputting the results.
 
 ```mermaid
@@ -122,26 +181,25 @@ sequenceDiagram
     participant Entity as Entity
     participant Attribute as Attribute
     participant JSON as JSONFile
+    User ->> Script: Start Script
+    Script ->> Config: Get Config Details
+    Config -->> Script: Return Config Details
+    Script ->> Excel: Read Excel Workbook
+    Excel -->> Script: Return Sheet Data
+    Script ->> DataDict: Create DataDictionary Instance
+    Script ->> Excel: Create Panda DataFrame
+    Script ->> Entity: Create Entity from Worksheet Name
+    Script ->> Excel: Iterate Over DataFrame Rows
 
-    User->>Script: Start Script
-    Script->>Config: Get Config Details
-    Config-->>Script: Return Config Details
-    Script->>Excel: Read Excel Workbook
-    Excel-->>Script: Return Sheet Data
-    Script->>DataDict: Create DataDictionary Instance
-    Script->>Excel: Create Panda DataFrame
-    Script->>Entity: Create Entity from Worksheet Name
-    Script->>Excel: Iterate Over DataFrame Rows
-    
     loop For Each Row
-        Script->>Attribute: Create Attribute from Row
-        Attribute-->>Entity: Add Attribute to Entity
+        Script ->> Attribute: Create Attribute from Row
+        Attribute -->> Entity: Add Attribute to Entity
     end
-    
-    Entity-->>DataDict: Add Entity to DataDictionary
-    Script->>JSON: Write DataDictionary to JSON
-    Script->>User: Output DataDictionary
-    User-->>Script: End Script
+
+    Entity -->> DataDict: Add Entity to DataDictionary
+    Script ->> JSON: Write DataDictionary to JSON
+    Script ->> User: Output DataDictionary
+    User -->> Script: End Script
 ```
 
 <!--
@@ -355,15 +413,14 @@ flowchart LR
         direction TB
         top2[top] --> bottom2[bottom]
     end
-    %% ^ These subgraphs are identical, except for the links to them:
+%% ^ These subgraphs are identical, except for the links to them:
 
-    %% Link *to* subgraph1: subgraph1 direction is maintained
+%% Link *to* subgraph1: subgraph1 direction is maintained
     outside --> subgraph1
-    %% Link *within* subgraph2:
-    %% subgraph2 inherits the direction of the top-level graph (LR)
+%% Link *within* subgraph2:
+%% subgraph2 inherits the direction of the top-level graph (LR)
     outside ---> top2
 ```
-
 
 ```mermaid
 flowchart TB
@@ -403,7 +460,6 @@ flowchart TD
     D("read_in_data_dictionary")
     dd_1.write_data_dictionary(dd_output_file)
     dd_1.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
-
 %% Edge connections between nodes
 %%    A --> B --> C --> B2 & D & n2
 %%    D -- Build and Design --> E --> F
@@ -411,9 +467,9 @@ flowchart TD
 %%    D -- Mermaid js --> I --> J
 
 %% Individual node styling. Try the visual editor toolbar for easier styling!
-    style E color:#FFFFFF, fill:#AA00FF, stroke:#AA00FF
-    style G color:#FFFFFF, stroke:#00C853, fill:#00C853
-    style I color:#FFFFFF, stroke:#2962FF, fill:#2962FF
+    style E color: #FFFFFF, fill: #AA00FF, stroke: #AA00FF
+    style G color: #FFFFFF, stroke: #00C853, fill: #00C853
+    style I color: #FFFFFF, stroke: #2962FF, fill: #2962FF
 
 %% You can add notes with two "%" signs in a row!
 ```
@@ -482,7 +538,10 @@ sequenceDiagram
     Script->>DataDictionary: Parse data into EntityData and AttributeData
     DataDictionary-->>Script: Return DataDictionary object
 ```
-To create a flowchart for the `create_data_dictionary_from_excel.py` script, we need to outline the main steps and processes involved in the script. Based on the provided sequence diagram and script details, here's a flowchart representation:
+
+To create a flowchart for the `create_data_dictionary_from_excel.py` script, we need to outline the main steps and
+processes involved in the script. Based on the provided sequence diagram and script details, here's a flowchart
+representation:
 
 ```mermaid
 flowchart TD
@@ -504,6 +563,7 @@ flowchart TD
 ```
 
 ### Explanation:
+
 - **Start Script**: The script begins execution.
 - **Process Command Line Arguments**: The script processes any command line arguments provided.
 - **Get Config Details**: Configuration details are fetched from the `conf/data_dictionary.conf` file.
@@ -515,48 +575,52 @@ flowchart TD
 - **Create Attribute for Each Row**: For each row, an attribute is created.
 - **Add Attribute to Entity**: The created attribute is added to the entity.
 - **All Rows Processed?**: A check to see if all rows have been processed.
-  - If **Yes**, proceed to add the entity to the DataDictionary.
-  - If **No**, continue iterating over the rows.
+    - If **Yes**, proceed to add the entity to the DataDictionary.
+    - If **No**, continue iterating over the rows.
 - **Add Entity to DataDictionary**: The entity is added to the DataDictionary.
 - **Write DataDictionary to JSON File**: The DataDictionary is written to a JSON file.
 - **Output DataDictionary**: The final DataDictionary is outputted.
 - **End Script**: The script ends.
 
-This flowchart provides a high-level overview of the script's process flow. If you need further details or modifications, feel free to ask!
+This flowchart provides a high-level overview of the script's process flow. If you need further details or
+modifications, feel free to ask!
 
 ## Use Cases/Stories/Epics/Key Processes
 
-1. Load existing data dictionary (generated from previous executions) information from JSON file into Data Dictionary objects (DataDictionary, Entity, Attribute)
-2. A technical process that imports an Excel spreadsheet that contains data dictionary information. 
-   * Each worksheet contains 1 Entities Definition
-   * Creates Entity and for each row creates an Attribute
-   * Imports/Uses
-     * DataDictionary
-     * Entity
-     * Attribute
+1. Load existing data dictionary (generated from previous executions) information from JSON file into Data Dictionary
+   objects (DataDictionary, Entity, Attribute)
+2. A technical process that imports an Excel spreadsheet that contains data dictionary information.
+    * Each worksheet contains 1 Entities Definition
+    * Creates Entity and for each row creates an Attribute
+    * Imports/Uses
+        * DataDictionary
+        * Entity
+        * Attribute
 3. Export existing data dictionary objects to JSON formatted file.
-   * JSON Format
-   * output_files/data_dictionary.json
-4. Maintain an external source (Excel, JSON, CSV, etc.) for the data dictionary that is imported as needed to add/update information from previous executions. 
+    * JSON Format
+    * output_files/data_dictionary.json
+4. Maintain an external source (Excel, JSON, CSV, etc.) for the data dictionary that is imported as needed to add/update
+   information from previous executions.
 5. Capture configuration details needed to ingest Excel spreadsheets containing data dictionary elements
-   * JSON Format
-   * data_dictionary_config.json
+    * JSON Format
+    * data_dictionary_config.json
 6. Generate various output formats of a data dictionary (e.g. Markdown, Excel, Document, diagrams, etc.)
-   * Take DataDictionary instance and export it's Entities and Attributes to various formats
-   * Create a set of linked pages that include data dictionary details.  This includes markdown pages.  These can be imported or otherwise used to make a data dictionary available to users.
-     * Markdown
-     * Excel
-     * JSON
-     * CSV
+    * Take DataDictionary instance and export it's Entities and Attributes to various formats
+    * Create a set of linked pages that include data dictionary details. This includes markdown pages. These can be
+      imported or otherwise used to make a data dictionary available to users.
+        * Markdown
+        * Excel
+        * JSON
+        * CSV
 7. Identify and Store data model relationships (ER Parent/Child, etc.)
 8. Generate Data Lineage/Traceability mapping
 
 ### 1. Load existing data dictionary (generated from previous executions) information from JSON file into Data Dictionary objects (DataDictionary, Entity, Attribute)
 
-If a data dictionary has been previously processed and saved into a JSON formatted file, this should be loaded prior to processing subsequent data dictionary entries.
+If a data dictionary has been previously processed and saved into a JSON formatted file, this should be loaded prior to
+processing subsequent data dictionary entries.
 
-### 2. A technical process that imports an Excel spreadsheet that contains data dictionary information. 
- 
+### 2. A technical process that imports an Excel spreadsheet that contains data dictionary information.
 
 * Each worksheet contains 1 Entities Definition
 * Creates Entity and for each row creates an Attribute
@@ -567,26 +631,30 @@ If a data dictionary has been previously processed and saved into a JSON formatt
 
 ### Export complete existing data dictionary objects to JSON formatted file.
 
-Take an existing data dictionary and export the data into a formatted file (JSON, Markdown, etc.).  This file can be used by other processes as needed and also loaded in subsequent processing steps. 
+Take an existing data dictionary and export the data into a formatted file (JSON, Markdown, etc.). This file can be used
+by other processes as needed and also loaded in subsequent processing steps.
 
 JSON Format
 output_files/data_dictionary.json
 
-### Maintain an external source (Excel, JSON, CSV, etc.) for the data dictionary that is imported as needed to add/update information from previous executions. 
+### Maintain an external source (Excel, JSON, CSV, etc.) for the data dictionary that is imported as needed to add/update information from previous executions.
 
 Export to Json
 
 ### Capture configuration details needed to ingest Excel spreadsheets containing data dictionary elements
-   * JSON Format
-   * data_dictionary_config.json
+
+* JSON Format
+* data_dictionary_config.json
 
 ### Generate various output formats of a data dictionary (e.g. Markdown, Excel, Document, diagrams, etc.)
-   * Take DataDictionary instance and export it's Entities and Attributes to various formats
-   * Create a set of linked pages that include data dictionary details.  This includes markdown pages.  These can be imported or otherwise used to make a data dictionary available to users.
-     * Markdown
-     * Excel
-     * JSON
-     * CSV
+
+* Take DataDictionary instance and export it's Entities and Attributes to various formats
+* Create a set of linked pages that include data dictionary details. This includes markdown pages. These can be imported
+  or otherwise used to make a data dictionary available to users.
+    * Markdown
+    * Excel
+    * JSON
+    * CSV
 
 ### Identify and Store data model relationships (ER Parent/Child, etc.)
 
@@ -602,7 +670,8 @@ Create diagrams showing traceability.
 
 ### create_data_dictionary_from_excel.py
 
-This script creates a DataDictionary object with a Excel spreadsheet identified that contains Entity and Attribute definitions.  
+This script creates a DataDictionary object with a Excel spreadsheet identified that contains Entity and Attribute
+definitions.
 
 1. Create DataDictionary from Excel Workbook
 2. Create panda DataFrame for Worksheet defined in config file that contains Entity/Attribute details
@@ -630,17 +699,14 @@ sequenceDiagram
     participant Entity as Entity
     participant Attribute as Attribute
     participant DataFrame as DataFrame
-
-    User->>Script: Start the script
-    Script->>DataDictionary: Create DataDictionary instance
-    Script->>DataFrame: Create panda Data Frame from Excel Worksheet
-    DataDictionary-->>Script: Return sheet data
-
-    Script->>DataDictionary: Create DataDictionary instance
-    Script->>DataDictionary: Parse data into EntityData and AttributeData
-    DataDictionary-->>Script: Return DataDictionary object
-
-    Script->>User: Output DataDictionary
+    User ->> Script: Start the script
+    Script ->> DataDictionary: Create DataDictionary instance
+    Script ->> DataFrame: Create panda Data Frame from Excel Worksheet
+    DataDictionary -->> Script: Return sheet data
+    Script ->> DataDictionary: Create DataDictionary instance
+    Script ->> DataDictionary: Parse data into EntityData and AttributeData
+    DataDictionary -->> Script: Return DataDictionary object
+    Script ->> User: Output DataDictionary
 ```
 
 ## Project Organization
@@ -665,7 +731,6 @@ Project Organization - Data Dictionary
 ```
 
 ## Class Definitions
-
 
 ```mermaid
 classDiagram
@@ -700,9 +765,10 @@ classDiagram
     DataDictionary "1" --> "*" EntityData
     EntityData "1" --> "*" AttributeData
 ```
-### Class - DataDictionary 
 
-Contains a complete data dictionary including a description as well as an array of Entity class objects. 
+### Class - DataDictionary
+
+Contains a complete data dictionary including a description as well as an array of Entity class objects.
 
 ```plantuml
 @startjson
@@ -778,8 +844,10 @@ Contains a complete data dictionary including a description as well as an array 
 * name (string) - A name for the data dictionary
 * description (string) - A description of the data dictionary
 * subject_area (string) - The subject area name for the entity (e.g. Master Data, Orders, etc.)
-* environment_name (string) - An optional property that describes that environment, business area, business process, application, etc. where the entity is defined. 
-* entities (list(Entity)) - An array of Entity objects (See Entity definition below).  A Data Dictionary can be initialized with a set of entities already created.
+* environment_name (string) - An optional property that describes that environment, business area, business process,
+  application, etc. where the entity is defined.
+* entities (list(Entity)) - An array of Entity objects (See Entity definition below). A Data Dictionary can be
+  initialized with a set of entities already created.
 
 #### DataDictionary - Methods
 
@@ -787,8 +855,9 @@ Contains a complete data dictionary including a description as well as an array 
 * add_entity(self, Entity) -> None: Adds a single Entity object to the Data Dictionary
 * remove_entity(self, Entity) -> None: Remove an entity from the data dictionary
 * get_entity(self, Entity.name) -> Entity: Gets an entity from the Data dictionary
-* write_data_dictionary(self): This method is intended to write the data dictionary's content to an output file. The out_filename parameter specifies the path where the file should be saved. The specific details about how the data is formatted and written are defined within the method.
-
+* write_data_dictionary(self): This method is intended to write the data dictionary's content to an output file. The
+  out_filename parameter specifies the path where the file should be saved. The specific details about how the data is
+  formatted and written are defined within the method.
 
 ### Class - Entity
 
@@ -799,8 +868,10 @@ A class that defines and logical data model entity or a physical model table alo
 * entity_name (string) - The name of the entity or table
 * entity_description (string) - A description of the entity
 * subject_area (string) - The subject area name for the entity (e.g. Master Data, Orders, etc.)
-* environment_name (string) - An optional property that describes that environment, business area, business process, application, etc. where the entity is defined. 
-* attributes (UserDict<Attribute>) - A dictionary containing Attribute objects (See Attribute definition below) with the attribute name as the key
+* environment_name (string) - An optional property that describes that environment, business area, business process,
+  application, etc. where the entity is defined.
+* attributes (UserDict<Attribute>) - A dictionary containing Attribute objects (See Attribute definition below) with the
+  attribute name as the key
 
 #### Entity - Methods
 
@@ -808,7 +879,7 @@ A class that defines and logical data model entity or a physical model table alo
 * entity_from_csv -> self (@classmethod): Creates an entity from a csv value
 * add_attribute(key, Attribute) -> None: Adds an attribute object
 * get_attribute(key) -> Attribute: If key exists, returns the attribute
-* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary 
+* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary
 
 ### Class - Attribute
 
@@ -826,16 +897,20 @@ Attribute/Field definition for an Entity based on a UserDict base class
 * __init__(String attribute_name) -> self (@classmethod): Initialize the class
 * add_attribute(key, Attribute) -> None: Adds an attribute object
 * get_attribute(key) -> Attribute: If key exists, returns the attribute
-* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary 
+* remove_attribute(key) -> None: If exists, removes the attribute from the dictionary
 
 ### Class - ExcelWorkbook
 
+The ExcelWorkbook class encapsulates the operations that can be performed on an Excel workbook, including reading
+worksheets, listing defined tables within worksheets, and more. It's primarily focused on extracting information rather
+than modifying or writing new Excel files.
 
-The ExcelWorkbook class encapsulates the operations that can be performed on an Excel workbook, including reading worksheets, listing defined tables within worksheets, and more. It's primarily focused on extracting information rather than modifying or writing new Excel files.
+The `ExcelWorkbook` class is designed to facilitate the interaction with Excel spreadsheet files using the OpenPyXL
+library. Here's a detailed explanation of its purpose and functionality based on the flowchart:
 
-The `ExcelWorkbook` class is designed to facilitate the interaction with Excel spreadsheet files using the OpenPyXL library. Here's a detailed explanation of its purpose and functionality based on the flowchart:
-
-The ExcelWorkbook and ExcelTable classes are designed to facilitate the handling of Excel spreadsheets by simplifying data extraction, manipulation, and interaction tasks. The ExcelWorkbook class represents an Excel workbook and provides functionality to interact with its contents:
+The ExcelWorkbook and ExcelTable classes are designed to facilitate the handling of Excel spreadsheets by simplifying
+data extraction, manipulation, and interaction tasks. The ExcelWorkbook class represents an Excel workbook and provides
+functionality to interact with its contents:
 
 ```mermaid
 classDiagram
@@ -865,45 +940,52 @@ classDiagram
 ```
 
 #### Purpose
-The `ExcelWorkbook` class encapsulates the operations that can be performed on an Excel workbook, including reading worksheets, listing defined tables within worksheets, and more. It's primarily focused on extracting information rather than modifying or writing new Excel files.
+
+The `ExcelWorkbook` class encapsulates the operations that can be performed on an Excel workbook, including reading
+worksheets, listing defined tables within worksheets, and more. It's primarily focused on extracting information rather
+than modifying or writing new Excel files.
 
 #### Functionality
 
 1. **Initialization (`__init__`)**
-    - **Parameters**: 
-      - `workbook_filename`: The path to the Excel file.
-      - `write_flag`: A boolean that indicates if the workbook should be opened for writing.
+    - **Parameters**:
+        - `workbook_filename`: The path to the Excel file.
+        - `write_flag`: A boolean that indicates if the workbook should be opened for writing.
     - **Behavior**:
-      - If the file exists and `write_flag` is `False`, it loads the workbook with data only.
-      - If the file doesn't exist, it logs an error.
-      - If `write_flag` is `True`, it warns that writing is not supported yet.
+        - If the file exists and `write_flag` is `False`, it loads the workbook with data only.
+        - If the file doesn't exist, it logs an error.
+        - If `write_flag` is `True`, it warns that writing is not supported yet.
 
 2. **`get_defined_tables`**
-    - **Parameters**: 
-      - `worksheet_name`: An optional name of a worksheet.
+    - **Parameters**:
+        - `worksheet_name`: An optional name of a worksheet.
     - **Behavior**:
-      - If no worksheet name is provided, it logs and iterates through all worksheets to print details of each table (displayName, name, type, range, and column names).
-      - If a specific worksheet name is provided, it logs and prints the table details specifically for that worksheet.
+        - If no worksheet name is provided, it logs and iterates through all worksheets to print details of each table (
+          displayName, name, type, range, and column names).
+        - If a specific worksheet name is provided, it logs and prints the table details specifically for that
+          worksheet.
 
 3. **`get_worksheets`**
     - **Returns**:
-      - A list of worksheet titles from the workbook.
+        - A list of worksheet titles from the workbook.
     - **Behavior**:
-      - Iterates through the workbook's worksheets, appending each worksheet's title to a return list.
-      - Adds the worksheet to the dictionary if it doesn't already exist.
+        - Iterates through the workbook's worksheets, appending each worksheet's title to a return list.
+        - Adds the worksheet to the dictionary if it doesn't already exist.
 
 4. **`add_worksheet_definitions`**
     - **Behavior**:
-      - Iterates through each worksheet in the workbook, adding worksheet titles and table data to the internal dictionary.
-      - For each table in a worksheet, it gathers table data for further processing.
+        - Iterates through each worksheet in the workbook, adding worksheet titles and table data to the internal
+          dictionary.
+        - For each table in a worksheet, it gathers table data for further processing.
 
 5. **`update_defined_tables`**
     - **Behavior**:
-      - Logs the gathering of table definitions for all worksheets in the workbook.
-      - Iterates through each worksheet and logs the tables being gathered from them.
+        - Logs the gathering of table definitions for all worksheets in the workbook.
+        - Iterates through each worksheet and logs the tables being gathered from them.
 
-Overall, the `ExcelWorkbook` class provides a structured way to interact with Excel workbooks for reading and analyzing data, particularly focused on listing worksheets and tables within them. The methods are largely designed for reporting purposes, as the class is currently focused on reading data rather than writing or modifying it.
-
+Overall, the `ExcelWorkbook` class provides a structured way to interact with Excel workbooks for reading and analyzing
+data, particularly focused on listing worksheets and tables within them. The methods are largely designed for reporting
+purposes, as the class is currently focused on reading data rather than writing or modifying it.
 
 Attributes:
 
@@ -932,16 +1014,21 @@ Methods:
 
 __init__: Initializes the table object with its reference, name, and data.
 Interaction
-The ExcelWorkbook class uses the ExcelTable class to manage tables within each worksheet. When interacting with a workbook, the ExcelWorkbook methods handle loading and processing of worksheets and tables. For tasks like retrieving table data or updating tables, the ExcelWorkbook may create and manage multiple instances of ExcelTable, using these to represent and manipulate individual tables within the Excel file.
+The ExcelWorkbook class uses the ExcelTable class to manage tables within each worksheet. When interacting with a
+workbook, the ExcelWorkbook methods handle loading and processing of worksheets and tables. For tasks like retrieving
+table data or updating tables, the ExcelWorkbook may create and manage multiple instances of ExcelTable, using these to
+represent and manipulate individual tables within the Excel file.
 
-This interaction allows users to handle both the workbook as a whole and its individual tables, providing a structured and organized way to work with Excel data.
+This interaction allows users to handle both the workbook as a whole and its individual tables, providing a structured
+and organized way to work with Excel data.
 
 ## Generating/Updating Documentation
 
 1. Running processes to update docs/ folder.
 2. Install the sphinx plugin/module.
 3. Run the sphinx-quickstart to create the initial structures
-4. Update core.py to modify the path to include the project directory and add the sphinx.ext.autodoc to the extensions array.
+4. Update core.py to modify the path to include the project directory and add the sphinx.ext.autodoc to the extensions
+   array.
 5. Make updates to the index.rst file to include the Python resources to generate documentation for.
 
 ```mermaid
@@ -949,7 +1036,7 @@ This interaction allows users to handle both the workbook as a whole and its ind
 title: Master Data - Organization
 ---
 erDiagram
-    ENTERPRISE ||--o{ ORGANIZATION : places
+    ENTERPRISE ||--o{ ORGANIZATION: places
     ENTERPRISE {
         int SYS_ENT_ID
     }
@@ -957,13 +1044,13 @@ erDiagram
         int SYS_ENT_ID
         string deliveryAddress
     }
-    ENTERPRISE	{
-      string OMS_EXTERNAL_INVOICE_SYSTEM
-      int OMS_SYS_VANENTERPRISE_ID
-      int SYS_CREATION_TEMPLATE_ID
-      int	SYS_HIFI_SCENARIO_ID
-      int	SYS_ENT_ID
-      string APPT_SCHEDULING_SYSTEM
+    ENTERPRISE {
+        string OMS_EXTERNAL_INVOICE_SYSTEM
+        int OMS_SYS_VANENTERPRISE_ID
+        int SYS_CREATION_TEMPLATE_ID
+        int SYS_HIFI_SCENARIO_ID
+        int SYS_ENT_ID
+        string APPT_SCHEDULING_SYSTEM
     }
 ```
 

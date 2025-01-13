@@ -22,106 +22,28 @@ import pprint as pp
 from model import DataDictionary as dd
 from pathlib import Path
 import numpy as np
+from excel_workbook import show_excel_file_details
 
 coloredlogs.install(level=logging.DEBUG,
                     fmt="%(asctime)s %(hostname)s %(name)s %(filename)s line-%(lineno)d %(levelname)s - %(message)s",
                     datefmt='%H:%M:%S')
 
 
-def get_all_tables(filename):
-    """ Get all tables from a given workbook. Returns a dictionary of tables.
-        Requires a filename, which includes the file path and filename.
+def get_excel_file_worksheets(spreadsheet_file: Path):
+    """Gets details of an Excel file.
+
+    This function will extract details of an Excel file.  The details will be returned in a TBD data structure.
 
     Args:
-        filename (str): The Excel filename
-
-    Returns:
-        object:
-    """
-
-    # Load the workbook, from the filename, setting read_only to False
-    wb = load_workbook(filename=filename, read_only=False, keep_vba=False, data_only=True, keep_links=False)
-
-    # Initialize the dictionary of tables
-    tables_dict = {}
-
-    # Go through each worksheet in the workbook
-    for ws_name in wb.sheetnames:
-        print("")
-        print(f"worksheet name: {ws_name}")
-        ws = wb[ws_name]
-        print(f"tables in worksheet: {len(ws.tables)}")
-
-        # Get each table in the worksheet
-        for tbl in ws.tables.values():
-            print(f"table name: {tbl.name}")
-            # First, add some info about the table to the dictionary
-            tables_dict[tbl.name] = {
-                'table_name': tbl.name,
-                'worksheet': ws_name,
-                'num_cols': len(tbl.tableColumns),
-                'table_range': tbl.ref}
-
-            # Grab the 'data' from the table
-            data = ws[tbl.ref]
-
-            # Now convert the table 'data' to a Pandas DataFrame
-            # First get a list of all rows, including the first header row
-            rows_list = []
-            for row in data:
-                print(str(row))
-                # Get a list of all columns in each row
-                cols = []
-                for col in row:
-                    cols.append(col.value)
-                rows_list.append(cols)
-
-            # Create a pandas dataframe from the rows_list.
-            # The first row is the column names
-            df = pd.DataFrame(data=rows_list[1:], index=None, columns=rows_list[0])
-            print(str(df))
-
-            # Add the dataframe to the dictionary of tables
-            tables_dict[tbl.name]['dataframe'] = df
-
-    return tables_dict
-
-
-def create_entities_from_excel_worksheet(spreadsheet_file: Path, data_dictionary: dd):
-    """Creates Entity object from an Excel Worksheet and adds it to the data dictionary
-
-    This function takes in a worksheet that is in the appropriate format and creates an Entity object
-    that is then added to the data dictionary.  This function uses panda data frames to read the Excel file.
-    TODO: Add check to make sure worksheet exists in Excel file.
-    TODO: Add check that worksheet contains all required header fields (e.g. NAME, DESCRIPTION, etc.)
-
-    Args:
-      data_dictionary (DataDictionary):
       spreadsheet_file (Path): The worksheet name
 
     Returns:
       None
     """
-    logging.info("Creating entities from excel worksheet")
-    excel_poib_data = pd.read_excel(spreadsheet_file,
-                                    sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
-        np.nan, None)
-    entity = dd.Entity(name=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
-                       description=constants.SOURCE_DATA_DICT_MAPPING['entity_name'],
-                       subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
-                       environment=constants.SOURCE_DATA_DICT_MAPPING['environment']
-                       )
-    for row_label, row in excel_poib_data.iterrows():
-        entity_attribute = dd.Attribute(
-            name=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['name']],
-            description=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['description']],
-            data_type=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['data_type']],
-            subject_area=constants.SOURCE_DATA_DICT_MAPPING['subject_area'],
-            environment=constants.SOURCE_DATA_DICT_MAPPING['environment'],
-            max_length=row[constants.SOURCE_DATA_DICT_MAPPING['attribute_column_mapping']['max_length']]
-        )
-        entity.add_attribute(entity_attribute)
-    data_dictionary.add_entity(entity)
+    logging.info("Getting worksheets")
+    excel_wb = load_workbook(filename=spreadsheet_file, data_only=True)
+    for worksheet in excel_wb.worksheets:
+        logging.info("Workbook worksheet: %s", worksheet.title)
 
 
 def read_in_data_dictionary(data_dictionary_source_file: Path) -> dd:
@@ -199,12 +121,42 @@ def main():
                                   environment="All",
                                   source_filename=test_spreadsheet
                                   )
-    create_entities_from_excel_worksheet(test_spreadsheet, data_dict)
+    # create_entities_from_excel_worksheet(test_spreadsheet, data_dict)
     data_dict.write_data_dictionary(dd_output_file)
 
 
 if __name__ == "__main__":
-    main()
+    pil_logger = logging.getLogger('PIL')
+    pil_logger.setLevel(logging.INFO)
+    for source_spreadsheet in constants.SOURCE_SPREADSHEETS:
+        logging.info("Getting worksheets for: %s using panda DataFrame", str(source_spreadsheet))
+        # get_excel_file_worksheets(source_spreadsheet)
+        # worksheets = show_excel_file_details.get_worksheets(source_spreadsheet)
+        # excel_poib_data = pd.read_excel(source_spreadsheet,
+        #                             sheet_name=constants.SOURCE_DATA_DICT_MAPPING['source_worksheet_name']).replace(
+        # np.nan, None)
+
+        # for name, sheet in excel_poib_data.items():
+        #     logging.info("Worksheet: %s", str(name))
+        #
+        sheets_dict = pd.read_excel(source_spreadsheet, sheet_name=None)
+
+
+        # all_sheets = []
+        # for name, sheet in sheets_dict.items():
+        #     # sheet['sheet'] = name
+        #     logging.info("Worksheet: %s",str(name))
+        #     # sheet = sheet.rename(columns=lambda x: x.split('\n')[-1])
+        #     all_sheets.append(str(name))
+
+        # full_table = pd.concat(all_sheets)
+        # full_table.reset_index(inplace=True, drop=True)
+        #
+        # print(full_table)
+
+
+
+    # main()
 
     # ************* Steps that were used to created markdown files ********************************
     # input_file_name = "po_sample.xlsx"
