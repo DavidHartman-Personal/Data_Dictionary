@@ -1,0 +1,1099 @@
+{
+  "DICTIONARY_NAME": "USAID_Data_Dictionary",
+  "DESCRIPTION": "USAID Data Dictionary for One Network system",
+  "DATE_GENERATED": "2025-01-29T07:21:10.504717",
+  "ENVIRONMENT": "All",
+  "SOURCE_FILES": [],
+  "ENTITIES": [
+    {
+      "ENTITY_ID": "SALES_ORDER",
+      "ENTITY_NAME": "SALES_ORDER",
+      "DESCRIPTION": "Small data set of Sales Order for Testing",
+      "SUBJECT_AREA": "Transaction: Order Management",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ACTION NAME",
+          "ATTRIBUTE_NAME": "Action Name",
+          "DESCRIPTION": "Actions Supported: OMS.CreateFromInteg, OMS.UpdateFromInteg, OMS.CancelFromInteg, OMS.CreateSOInPlannedState, OMS.CreateSOInQuoteState, OMS.ConvertQuoteToSO, OMS.CreateOrUpdateFromInteg, OMS.CompleteSales",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "CREATION ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Creation Org Enterprise Name",
+          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "CREATION ORG NAME",
+          "ATTRIBUTE_NAME": "Creation Org Name",
+          "DESCRIPTION": "Order Creation Organization, this is either Creation User's Organization or Order Managing Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "OWNING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Owning Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Organization that owns the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "OWNING ORG NAME",
+          "ATTRIBUTE_NAME": "Owning Org Name",
+          "DESCRIPTION": "Organization Name of the Organization that owns the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Buying Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Buyer Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING ORG NAME",
+          "ATTRIBUTE_NAME": "Buying Org Name",
+          "DESCRIPTION": "Organization Name of the Buyer Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "CUSTOMER NAME",
+          "ATTRIBUTE_NAME": "Customer Name",
+          "DESCRIPTION": "Customer Name as defined in the Customer Master.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "192",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Ship To Org Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Ship To Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ORG NAME",
+          "ATTRIBUTE_NAME": "Ship To Org Name",
+          "DESCRIPTION": "Organization Name of the Ship To Organization.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORDER NUMBER",
+          "ATTRIBUTE_NAME": "Order Number",
+          "DESCRIPTION": "Order number. May be generated or provided by the user via integration.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "64",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO SITE ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Ship To Site Enterprise Name",
+          "DESCRIPTION": "Enterprise Name of the Ship To Site.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO SITE ORGANIZATION NAME",
+          "ATTRIBUTE_NAME": "Ship To Site Organization Name",
+          "DESCRIPTION": "Organization Name of the Ship To Site.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO SITE NAME",
+          "ATTRIBUTE_NAME": "Ship To Site Name",
+          "DESCRIPTION": "Ship To Site Name.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "256",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS STREET 1",
+          "ATTRIBUTE_NAME": "Ship To Address Street 1",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS STREET 2",
+          "ATTRIBUTE_NAME": "Ship To Address Street 2",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS CITY",
+          "ATTRIBUTE_NAME": "Ship To Address City",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS STATE",
+          "ATTRIBUTE_NAME": "Ship To Address State",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS ZIP",
+          "ATTRIBUTE_NAME": "Ship To Address Zip",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SHIP TO ADDRESS COUNTRY",
+          "ATTRIBUTE_NAME": "Ship To Address Country",
+          "DESCRIPTION": "Ship To Address",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "TRANS MODE NAME",
+          "ATTRIBUTE_NAME": "Trans Mode Name",
+          "DESCRIPTION": "Mode of transport as defined in the Equipment Type master.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING_ENUMERATION",
+          "MAX_LENGTH": "64",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "FOB CODE",
+          "ATTRIBUTE_NAME": "FOB Code",
+          "DESCRIPTION": "Freight Terms of Sale (Free On Board) Code",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING_ENUMERATION",
+          "MAX_LENGTH": "N/A (Enumerated)",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "FOB POINT",
+          "ATTRIBUTE_NAME": "FOB Point",
+          "DESCRIPTION": "Freight Terms of Sale (Free On Board) charge point (origin, destination)",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING_ENUMERATION",
+          "MAX_LENGTH": "N/A (Enumerated)",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ITEM NAME",
+          "ATTRIBUTE_NAME": "Item Name",
+          "DESCRIPTION": "Item Name as defined in the Item Master. If ExtItemName not set",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "LINE TYPE",
+          "ATTRIBUTE_NAME": "Line Type",
+          "DESCRIPTION": "Product or Service. Defaults to Product.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING_ENUMERATION",
+          "MAX_LENGTH": "N/A (Enumerated)",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUEST QUANTITY",
+          "ATTRIBUTE_NAME": "Request Quantity",
+          "DESCRIPTION": "Request quantity",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DOUBLE",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "QUANTITY UOM",
+          "ATTRIBUTE_NAME": "Quantity UOM",
+          "DESCRIPTION": "Quantity UOM",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING_ENUMERATION",
+          "MAX_LENGTH": "N/A (Enumerated)",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "CURRENCY",
+          "ATTRIBUTE_NAME": "Currency",
+          "DESCRIPTION": "Currency code (e.g. USD)",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "64",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "IS SPOT",
+          "ATTRIBUTE_NAME": "Is Spot",
+          "DESCRIPTION": "Indicates whether this PO is spot (once off) or contract based",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "BOOLEAN",
+          "MAX_LENGTH": "1",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "IS EXPEDITE",
+          "ATTRIBUTE_NAME": "Is Expedite",
+          "DESCRIPTION": "Indicates there is a request to expedite the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "BOOLEAN",
+          "MAX_LENGTH": "1",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING AGENT 1 ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Buying Agent 1 Enterprise Name",
+          "DESCRIPTION": "Agent of buyer who may act on behalf of the buyer and manage the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING AGENT 1 NAME",
+          "ATTRIBUTE_NAME": "Buying Agent 1 Name",
+          "DESCRIPTION": "Agent of buyer who may act on behalf of the buyer and manage the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING AGENT 2 ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Buying Agent 2 Enterprise Name",
+          "DESCRIPTION": "Agent of buyer who may act on behalf of the buyer and manage the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUYING AGENT 2 NAME",
+          "ATTRIBUTE_NAME": "Buying Agent 2 Name",
+          "DESCRIPTION": "Agent of buyer who may act on behalf of the buyer and manage the order.",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITION NUMBER",
+          "ATTRIBUTE_NAME": "Requisition Number",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "64",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITION REQUESTING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Requisition Requesting Org Enterprise Name",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITION REQUESTING ORG NAME",
+          "ATTRIBUTE_NAME": "Requisition Requesting Org Name",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "128",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITION LINE NUMBER",
+          "ATTRIBUTE_NAME": "Requisition Line Number",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": "64",
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "LINEREQUISITIONNUMBER",
+          "ATTRIBUTE_NAME": "LineRequisitionNumber",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITIONLINEREQUESTINGORGNAME",
+          "ATTRIBUTE_NAME": "RequisitionLineRequestingOrgName",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "REQUISITIONLINEREQUESTINGORGENTERPRISENAME",
+          "ATTRIBUTE_NAME": "RequisitionLineRequestingOrgEnterpriseName",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUDGET OWNING ORG ENTERPRISE NAME",
+          "ATTRIBUTE_NAME": "Budget Owning Org Enterprise Name",
+          "DESCRIPTION": "Funding related",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "BUDGET OWNING ORG NAME",
+          "ATTRIBUTE_NAME": "Budget Owning Org Name",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "TASK ORDER",
+          "ATTRIBUTE_NAME": "Task Order",
+          "DESCRIPTION": "Populate with the PSA TASK Order",
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "FISCAL YEAR FUNDING",
+          "ATTRIBUTE_NAME": "Fiscal Year Funding",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "FUNDING SOURCE ",
+          "ATTRIBUTE_NAME": "Funding Source ",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "FUNDING SOURCE DETAILS",
+          "ATTRIBUTE_NAME": "Funding Source Details",
+          "DESCRIPTION": null,
+          "SUBJECT_AREA": "Transaction: Order Management",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "ENTERPRISE",
+      "ENTITY_NAME": "ENTERPRISE",
+      "DESCRIPTION": "The highest level in the Enterprise/Organization/Site Hierarchy",
+      "SUBJECT_AREA": "Enterprise entity",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "Unique ID that identifies and Organization",
+          "SUBJECT_AREA": "Enterprise entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_NAME",
+          "ATTRIBUTE_NAME": "ORGANIZATION_NAME",
+          "DESCRIPTION": "Organization Name",
+          "SUBJECT_AREA": "Enterprise entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 64.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ORGANIZATION_DESCRIPTION",
+          "DESCRIPTION": "Organization Description",
+          "SUBJECT_AREA": "Enterprise entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date Organization was created",
+          "SUBJECT_AREA": "Enterprise entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATETIME",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "ORGANIZATION",
+      "ENTITY_NAME": "ORGANIZATION",
+      "DESCRIPTION": "Level 2 in the Enterprise/Organization/Site Hierarchy",
+      "SUBJECT_AREA": "Organization entity",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "Unique ID that identifies and Organization",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_NAME",
+          "ATTRIBUTE_NAME": "ORGANIZATION_NAME",
+          "DESCRIPTION": "Organization Name",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 64.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ORGANIZATION_DESCRIPTION",
+          "DESCRIPTION": "Organization Description",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_ID",
+          "ATTRIBUTE_NAME": "ENTERPRISE_ID",
+          "DESCRIPTION": "FK Link to Enterprise",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": "ENTERPRISE",
+          "PARENT_ATTRIBUTE": "ENTERPRISE_ID",
+          "PARENT_RETURN_ATTRIBUTE": "ENTERPRISE_ID",
+          "JOIN_CRITERIA": [
+            "ORGANIZATION.ENTERPRISE_ID = ENTERPRISE.ENTERPRISE_ID"
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ENTERPRISE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "ENTERPRISE_DESCRIPTION",
+          "DESCRIPTION": "FK Link to Enterprise.Description",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": "ENTERPRISE",
+          "PARENT_ATTRIBUTE": "ENTERPRISE_ID",
+          "PARENT_RETURN_ATTRIBUTE": "ENTERPRISE_DESCRIPTION",
+          "JOIN_CRITERIA": [
+            "ORGANIZATION.ENTERPRISE_ID = ENTERPRISE.ENTERPRISE_ID"
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date Organization was created",
+          "SUBJECT_AREA": "Organization entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATETIME",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": "SITE",
+      "ENTITY_NAME": "SITE",
+      "DESCRIPTION": "Level 3 in the Enterprise/Organization/Site Hierarchy",
+      "SUBJECT_AREA": "Site entity",
+      "ENVIRONMENT": "Data Generation",
+      "ATTRIBUTES": [
+        {
+          "ATTRIBUTE_ID": "SITE_ID",
+          "ATTRIBUTE_NAME": "SITE_ID",
+          "DESCRIPTION": "Unique ID that identifies and Organization",
+          "SUBJECT_AREA": "Site entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SITE_NAME",
+          "ATTRIBUTE_NAME": "SITE_NAME",
+          "DESCRIPTION": "Organization Name",
+          "SUBJECT_AREA": "Site entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 64.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "SITE_DESCRIPTION",
+          "ATTRIBUTE_NAME": "SITE_DESCRIPTION",
+          "DESCRIPTION": "Organization Description",
+          "SUBJECT_AREA": "Site entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "STRING",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "ORGANIZATION_ID",
+          "ATTRIBUTE_NAME": "ORGANIZATION_ID",
+          "DESCRIPTION": "FK Link to Organization",
+          "SUBJECT_AREA": "Site entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "INT",
+          "MAX_LENGTH": 128.0,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": "ORGANIZATION",
+          "PARENT_ATTRIBUTE": "ORGANIZATION_ID",
+          "PARENT_RETURN_ATTRIBUTE": "ORGANIZATION_ID",
+          "JOIN_CRITERIA": [
+            "SITE.ORGANIZATION_ID = ORGANIZATION.ORGANIZATION_ID"
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        },
+        {
+          "ATTRIBUTE_ID": "DATE_CREATED",
+          "ATTRIBUTE_NAME": "DATE_CREATED",
+          "DESCRIPTION": "Date Organization was created",
+          "SUBJECT_AREA": "Site entity",
+          "ENVIRONMENT": "Data Generation",
+          "DATA_TYPE": "DATETIME",
+          "MAX_LENGTH": null,
+          "REQUIRED": "Y",
+          "PARENT_ENTITY": null,
+          "PARENT_ATTRIBUTE": null,
+          "PARENT_RETURN_ATTRIBUTE": null,
+          "JOIN_CRITERIA": [
+            null
+          ],
+          "PARENT_FILTER_CRITERIA": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+@startuml
+top to bottom direction
+skinparam linetype ortho
+
+json JSON {
+  "ENTITY_SOURCES": [
+    {
+      "source_file_name": "<Excel File Path>",
+      "source_worksheet_name": "<Excel Worksheet>",
+      "entity_name": "<Entity Name>",
+      "subject_area": "<Subject Area>",
+      "environment": "<Dev, Test, Prod, Data Generation, etc.>",
+      "keys": "<PK, FK, etc.>",
+      "attribute_column_mapping": {
+        "name": "<Field Name>",
+        "data_type": "<Field Type>",
+        "required": "Y/N",
+        "description": "<Description>",
+        "max_length": "<Max Length>",
+        "mask": "<Format/Mask>"
+      }
+    },
+    {
+      "source_file_name": "<Excel File Path>",
+      "source_worksheet_name": "<Excel Worksheet>",
+      "entity_name": "<Entity Name 2>",
+      "subject_area": "<Subject Area>",
+      "environment": "<Dev, Test, Prod, Data Generation, etc.>",
+      "keys": "<PK, FK, etc.>",
+      "attribute_column_mapping": {
+        "name": "<Field Name>",
+        "data_type": "<Field Type>",
+        "required": "Y/N",
+        "description": "<Description>",
+        "max_length": "<Max Length>",
+        "mask": "<Format/Mask>"
+      }
+    }
+  ]
+}
+package DD_CONSTANTS as "Data Dictionary Constants"  {
+    note as N1
+      Data Dictionary constants
+      used for processing
+    end note
+
+    object ENTITIES_SOURCES {
+    .. Properties ..
+      source_file_name: <source folder>
+      source_worksheet_name: 'OMS.SalesOrder_IBv4.0'
+      entity_name: "OMS_SALES_ORDER"
+      subject_area: "Transaction: Order Management"
+      description: "OMS Sales Order entity"
+      environment: "Data Generation"
+    .. Objects ..
+      attribute_column_mapping: [attribute_column_mapping]
+    }
+    class attribute_column_mapping {
+    .. Objects ..
+      name: <Attribute Field Name>
+      data_type: <Attribute Field Type>
+      required: "Y/N"
+      description: "Transaction: Order Management"
+      max_length: "OMS Sales Order entity"
+      mask: "Data Generation"
+    }
+    ENTITIES_SOURCES "1" *-- "many" attribute_column_mapping: Array of \n attribute mappings
+}
+
+
+
+title DataDictionary Class Diagram
+class Attribute as "model.DataDictionary.Attribute" {
+   .. Class Attributes ..
+   + subject_area: str
+   + environment: str
+   + key_types: str
+   + name: str
+   + data_type: str
+   + description: str
+   - _attribute_name: str
+   + required: str = "Y"
+   + mask: str
+   + max_length: int
+   .. Class Methods ..
+   __init__():
+   to_dict(self):
+   attribute_from_dict(cls, attribute_dict: dict):
+}
+note right of Attribute::"attribute_from_dict(cls, attribute_dict: dict)"
+This creates an attribute
+from a Python dictionary object
+end note
+
+class DataDictionary as "model.DataDictionary.DataDictionary" {
+   subject_area:
+   environment:
+   entity_count:
+   entities:
+   source_files:
+   name:
+   description:
+   _data_dictionary_registry:
+   __init__():
+   create_data_dictionary_from_json(cls, data_dictionary_source_file: Path):
+   add_source_file(self, source_file: Path):
+   add_entity(self, entity: Entity):
+   write_data_dictionary(self, out_filename: Path):
+   create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False):
+   is_empty_dir(path):
+   get_entities(self):
+   get_entity(self, entity_name: str):
+   __str__(self):
+}
+
+class Entity as "model.DataDictionary.Entity" {
+   subject_area:
+   environment:
+   attribute_count:
+   _entity_id:
+   name:
+   description:
+   attributes:
+   __init__():
+   __str__(self):
+   to_json(self):
+   to_dict(self):
+   entity_from_dict(cls, entity_dict: dict):
+   entity_from_json(cls, entity_json_string: str):
+   add_attribute(self, attribute: Attribute):
+   get_entity(self):
+   get_entity_id(self):
+}
+DataDictionary *-- Entity
+Entity *-- Attribute
+
+
+@enduml

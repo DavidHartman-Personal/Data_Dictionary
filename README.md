@@ -16,7 +16,7 @@ The below high level steps describe the process for identifying and loading Data
 generating sample data
 
 1. Identify source of Sales Order Test Data data element definitions
-2. Create Script used to Extract Sales Order metadata
+2. Create Data Dictionary containing Sales Order Entity/Attribute definitions
 3. Example sample data scenarios
 4. Identify all Parent entities defined in the Sales Order definition
 5. Sample data generation order
@@ -30,7 +30,7 @@ generating sample data
 
 See table below for details related to metadata available related to Sales Orders.
 
-| Attribute Name                                                            | Column Name                     | Description                                                                           |
+| Spreadsheet File                                                          | Worksheet Name                  | Description                                                                           |
 |:--------------------------------------------------------------------------|:--------------------------------|:--------------------------------------------------------------------------------------|
 | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx                          | HCPT.SalesOrder_IBv1.0          | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx-HCPT.SalesOrder_IBv1.0               |
 | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx                          | OMS.SalesOrder_IBv4.0           | AllUSAIDInterfaces-Release Date -11-15-2024.xlsx-OMS.SalesOrder_IBv4.0                |
@@ -43,68 +43,91 @@ See table below for details related to metadata available related to Sales Order
 | SCCT Enterprise Mapping Document 20240813.xlsx                            | RPL.EnhancedBucketizedOrderForB | SCCT Enterprise Mapping Document 20240813.xlsx-RPL.EnhancedBucketizedOrderForB        |
 | USAID NextGen SCCT GHSC-PSM Implementing Partner Specifications v1.2.xlsx | Sales Order                     | USAID NextGen SCCT GHSC-PSM Implementing Partner Specifications v1.2.xlsx-Sales Order |
 
-### Script used to Extract Sales Order metadata
+#### Depdendencies
 
-The [extract_data_dictionary_information](./data_dictionary/extract_data_dictionary_information.py) script is used to
-extract details from spreadsheets, documents, files, etc. The output of this script includes a dictionary/JSON data structures that can be then used to extract other data dictionary related information.
-The below are the high level steps this script performs:
+SCC.Organization_IB
 
-1. Read in JSON/Dictionary that identifies sources of Data Dictionary information.
-2. Each source of Data Dictionary information identifies the worksheet and which Entity it defines.
+### Create Data Dictionary containing Sales Order Entity/Attribute definitions
 
-```json
-SOURCE_DATA_DICT_MAPPING = {
-  [ {
-        'source_worksheet_name': 'PurchaseOrder_IB',
-        'entity_name': "PURCHASE_ORDER_IB",
-        'subject_area': "Transaction: Order Management",
-        'environment': "Data Generation",
-        'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
-        'attribute_column_mapping': {
-          'name': "Field Name",
-          'data_type': "Field Type",
-          'required': "Required",
-          'description': "Description",
-          'max_length': "Max Length",
-          'mask': "Format"
-        }
-    },
-    {
-        'source_worksheet_name': 'PurchaseOrder_IB',
-        'entity_name': "PURCHASE_ORDER_IB",
-        'subject_area': "Transaction: Order Management",
-        'environment': "Data Generation",
-        'source_file_name': "C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
-        'attribute_column_mapping': {
-          'name': "Field Name",
-          'data_type': "Field Type",
-          'required': "Required",
-          'description': "Description",
-          'max_length': "Max Length",
-          'mask': "Format"
-        }
-    }
-    ]
-}
-```
+The [create_data_dictionary_from_excel](./data_dictionary/create_data_dictionary_from_excel.py) script uses the
+ENTITIES_SOURCES data structure to create a Data Dictionary containing all entity/attribute definitions for Sales
+Orders. Below is the data structure that contains the information needed to identify the Excel file and worksheet
+containing Entity/Attribute details to create a Data Dictionary. The script will loop through all entries and create a
+Data Dictionary containing the Entity/Attribute details.
 
 ```python
-dict(SOURCE_FILES=[
-    dict(FILENAME='FILENAME')],
-    source_worksheet_name='PurchaseOrder_IB',
-     entity_name="PURCHASE_ORDER_IB",
-     subject_area="Transaction: Order Management",
-     environment="Data Generation",
-     source_file_name="C:\\Users\\DHARTMAN\\Documents\\Programming\\PycharmProjects\\Data_Dictionary\\input_files\\po_sample.xlsx",
-     attribute_column_mapping={
-         'name': "Field Name",
-         'data_type': "Field Type",
-         'required': "Required",
-         'description': "Description",
-         'max_length': "Max Length",
-         'mask': "Format"
-     })
+ENTITIES_SOURCES = [
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="OMS_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="OMS Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+    ,
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="HCPT_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="HCPT Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+]
 ```
+
+```json
+{
+  "DATA_DICTIONARY_SOURCES": [
+    {
+      "source_file_name": "<Excel File Path>",
+      "source_worksheet_name": "<Excel Worksheet>",
+      "entity_name": "<Entity Name>",
+      "subject_area": "<Subject Area>",
+      "environment": "<Dev, Test, Prod, Data Generation, etc.>",
+      "keys": "<PK, FK, etc.>",
+      "attribute_column_mapping": {
+        "name": "<Field Name>",
+        "data_type": "<Field Type?",
+        "required": "Y/N",
+        "description": "<Description>",
+        "max_length": "<Max Length>",
+        "mask": "<Format/Mask>"
+      }
+    },
+    {
+      "source_file_name": "<Excel File Path>",
+      "source_worksheet_name": "<Excel Worksheet>",
+      "entity_name": "<Entity Name 2>",
+      "subject_area": "<Subject Area>",
+      "environment": "<Dev, Test, Prod, Data Generation, etc.>",
+      "keys": "<PK, FK, etc.>",
+      "attribute_column_mapping": {
+        "name": "<Field Name>",
+        "data_type": "<Field Type?",
+        "required": "Y/N",
+        "description": "<Description>",
+        "max_length": "<Max Length>",
+        "mask": "<Format/Mask>"
+      }
+    }
+  ]
+} 
+```
+
+Each entry identifies an Excel File and worksheet that contains Entity/Attribute details. This also includes a mapping
+data structure that identifies which Excel columns map to the DataDictionary Entity and Attribute class definitions.
 
 [//]: # (TODO: Create function that can print markdown text that can be pasted into documentation.  E.g. a table that lists the spreadsheet files, tabs, etc. that is built from the data structure created in the script above.)
 
@@ -112,21 +135,125 @@ dict(SOURCE_FILES=[
 sequenceDiagram
 %% A template for creating a mermaid sequence diagram
     autonumber
-    participant User
-    participant Script as extract_data_dictionary_information
+    participant Script as create_data_dictionary_from_excel
 %% Include additional components/participants/actors/scripts/etc. that are involved in the process
 %% For example, Classes or modules that are required for the script 
-    participant DataDictionarySource
+    participant ENTITIES_SOURCES
     participant DataDictionary
+    participant ExcelFile
     participant Entity
     participant Attribute
-    User ->> Script: Initial call to start script
+    Script ->> ExcelFile: Open Excel File and Worksheet
     loop Loop through Data Dictionary Sources
-        note right of DataDictionarySource: For each source we will <BR> extract Entity/Attribute details
-        DataDictionarySource ->> DataDictionarySource: Looping through Data Sources
+        note right of ENTITIES_SOURCES: For each source we will <BR> extract Entity/Attribute <BR> details from Excel
+        ENTITIES_SOURCES ->> ENTITIES_SOURCES: Looping through Data Sources
     end
-    
 ```
+
+```mermaid
+flowchart TD
+%% Nodes
+    A("Start - 
+ Create Data Dictionary from Excel")
+B("Call create_data_dictionary_from_config_data")
+C("Loop through ENTITIES_SOURCES")
+D{"Decision:<BR> Continue or Stop?"}:::yellow
+E("Development Phase"):::pink
+F("Testing Phase"):::purple
+G("Deployment"):::green
+H("Feedback and Improvement"):::orange
+
+%% Edges
+A --> B --> C --> D
+D -- Continue --> E --> F --> G
+D -- Stop --> H
+G --> H
+H --> B
+
+%% Styling
+
+```
+
+### Create Relationship/Constraint mappings
+
+While lopping through each Entity and extracting attribute details, store relationship/constraint details for later processing.  
+The data structure for storing this information is described below.
+
+- Each Entity will have a dictionary entry that is an array of relationships/constraints.
+
+A constraint will include the following details:
+
+entity=<Entity from DataDictionary Entry>
+constraints = [<An Array of constraint definitions>]
+
+A constraint entry includes the following details:
+* **constraint_name**: A Name for the constraint
+* **constraint_type**: The type of constraint.  E.g. Foreign Key/Primary Key
+* **parent_entity**: Parent Entity Name.  This will be validated by checking if Entity exists in DataDictionary
+* **parent_attribute**: Attribute in Parent Entity.  For a FK/PK constraint, this will be the primary key field of the parent entity.  This will be validated by checking if Entity exists in DataDictionary
+* **parent_return_attribute**: The Attribute from the Parent Entity that becomes the value for the child entities attribute
+* **parent_join_criteria**: The logic for how the child and parent entities are constrained. This will generally be the join criteria used to perform lookup into the parent entity
+* **parent_filter_criteria**: Additional criteria/logic that is to be applied determining the unique value to be returned from a Parent entity lookup.  E.g. Only consider parent entity values that are marked as "active"
+
+A constraint example is described below:
+
+```python
+ENTITY_CONSTRAINTS = dict(entity_name="<Entity Name>",
+                          constraints=[])
+
+```
+
+```python
+ENTITY_CONSTRAINTS = [
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="OMS_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="OMS Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+    ,
+    dict(source_file_name=SOURCE_FOLDER / 'AllUSAIDInterfaces-Release Date -11-15-2024.xlsx',
+         source_worksheet_name='OMS.SalesOrder_IBv4.0',
+         entity_name="HCPT_SALES_ORDER",
+         subject_area="Transaction: Order Management",
+         description="HCPT Sales Order entity",
+         environment="Data Generation",
+         attribute_column_mapping=dict(name="Field Name",
+                                       data_type="Field Type",
+                                       required="Required",
+                                       description="Description",
+                                       max_length="Max Length",
+                                       mask="Format")
+         )
+]
+```
+
+
+```mermaid
+erDiagram
+    CHILD_ENTITY {
+        string customer_id PK "The unique identifier for a customer"
+        string customer_name "The name of the customer"
+        int company_id FK "The company that the customer belongs to.  This is constrained by the Company Entity"
+    }
+    PARENT_ENTITY {
+        string company_id PK "The unique identifier for a company"
+        string company_name "The name of the customer"
+    }
+    %% Relationhips, including cardinality are defined below.
+    CHILD_ENTITY ||--|{ PARENT_ENTITY : "is part of a"
+```
+
+With the above processes, the goal would be to produce a diagram with the appropriate links/RI.
+
+Entity with complete set of attributes, keys, etc. RI between parent and child.
 
 ### Example sample data scenarios
 
@@ -135,6 +262,56 @@ sequenceDiagram
 ### Sample data generation order
 
 ### Ensuring FK/PK relationships for child entities in sample data
+
+#### Enterprise/Org/Site Hierarchy - Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    ENTERPRISE {
+        int ENTERPRISE_ID PK
+        string ENTERPRISE_NAME
+        string ENTERPRISE_DESCRIPTION
+    }
+    ORGANIZATION {
+        int ORGANIZATION_ID PK
+        string ORGANIZATION_NAME
+        string ORGANIZATION_DESCRIPTION
+        int ENTERPRISE_ID FK
+    }
+    SITE {
+        int SITE_ID PK
+        string SITE_NAME
+        string SITE_DESCRIPTION
+        int ORGANIZATION_ID FK
+    }
+    ENTERPRISE one to one or more ORGANIZATION: "is part of an"
+    ORGANIZATION one to one or more SITE: "Site is part of an organization"
+```
+
+
+```mermaid
+erDiagram
+    CAR ||--o{ NAMED-DRIVER : allows
+    CAR {
+        string registrationNumber PK
+        string make
+        string model
+        string[] parts
+    }
+    PERSON ||--o{ NAMED-DRIVER : is
+    PERSON {
+        string driversLicense PK "The license #"
+        string(99) firstName "Only 99 characters are allowed"
+        string lastName
+        string phone UK
+        int age
+    }
+    NAMED-DRIVER {
+        string carRegistrationNumber PK, FK
+        string driverLicence PK, FK
+    }
+    MANUFACTURER only one to zero or more CAR : makes
+```
 
 ### Using created markdown/confluence page to extract seed data (e.g. Enterprise) from Confluence page, etc. if available.
 
@@ -769,6 +946,253 @@ classDiagram
 ### Class - DataDictionary
 
 Contains a complete data dictionary including a description as well as an array of Entity class objects.
+[plantUML for All Classes](https://www.plantuml.com/plantuml/png/bLN1RkCs4BthAmQwRDecRXVeIMYBJMDl4Q2nWzWz56r1CEBOvbeYLNAKr5ZatqkDADFMnjkj3n4uV6z8llV8lFCa7RLrbP5jW2myMY9RWz8EIzBMP7wdJIEThA7I1cdV85X7MvjbZIntSeCmdOgRnNovkfwlbY0zv5D94gQQ-TBjuSOQJzAGpm4-PX1-nX9sqFbR7WACAUL0YVEjHmLhww1njaJljTdm31h5pJ8UbPNq7cRprUtgThOKoyLl3pUpPLnpCe5xPnjqfD67KUpiRUjA56jTeJ2onW9-w4jXkKgX--aKzspTpcyHAOBVBEwMawMiq2zSG8lRdv--dtpt9fBGaAPzXEO1AfRNluQTBHwciuTywDm-Vi2IX7Ge0shbfF6IbIY0cyATD47e6WqD78M-TBfX43S6taF4zyiEM3HFsbdJqOjepYzeqCcEdG_QB7WJHy988gSVMq9HsggjZQXbqmJT2_ZZtDHVJ7r9Nfnj0X_FhXjDk1wOy5vZfM0UoeCNIf8K8OgluLQXFE0S_jrgXoeS-_TlvwzezwLor_8VKQ7PqFQisWdgT-TaPcK-pMV-DeUlhwuWhwNPvvyH_jevkGUxXZzDGa6SzjbB5dwagKA-JyStaCsOQhbniivwQv9mqeUbhS9gSagR720v-zNPTNFA7NpxPfHYJmwuVfg-LDxXdXtqnqMsFesJpoV5P5ygNu58iXtQC26bWD4_XYpaF16jIfsFNTQ6uEJ8TqXRguRp2g6D9Y4klYeOHbQeeDk5nseTIsa_QsVhVhgi_6MQu5e1tT-EyvBni-ZqPal1v2HoKUJ_hrcUhRRQG-bGTXP9as1PnmS9z_jm70CgPSIoVrbwKJaceoITpSfe60Dp6efi_1XbwOaiRNjIqUZxKNgVOoMc91lVPBQ54vCE9Hnkj2Utv-cnQr6WCQcN-8EtffTuF7sqemBk9Mq7mvKwdkCiNCBdqFtP8x0V533ZRqGzE_tf1YF1jiHjEprIwtIiMhgTii-crowI3iN0Ra83fLtFlOIrxJPgdz3ngWKyMbk5-_9ULXvZQ-q5rWtjEzv5avRS88d1DrvfL1-TCbtHY1F2anFYG7s9yOjgd8yTptzvtD95E4vStABGwhyIblX-5Aap1-6tWSF4fRFFHHHcVBrZDTtj4JebDQ6vq6r3cmrhd1AN7ibens5SfEVcTUjIDQbrPDUfBVplhBScumzNqXBPEpIghQj_0G00)
+
+```plantuml
+class DataDictionary as "model.DataDictionary.DataDictionary" {
+   + str : subject_area: 
+   + str : environment: 
+   + str : entity_count: 
+   + List[Entity] : entities: 
+   + List[str] : source_files: 
+   + str : name: 
+   + str : description: 
+   ..
+   -_data_dictionary_registry: 
+   ..
+   __init__() : DataDictionary
+   {static} create_data_dictionary_from_json(cls, data_dictionary_source_file: Path) 
+   + add_source_file(self, source_file: Path) 
+   + add_entity(self, entity: Entity): 
+   + write_data_dictionary(self, out_filename: Path): 
+   + create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False): 
+   - is_empty_dir(path): 
+   + get_entities(self): 
+   + get_entity(self, entity_name: str): 
+   # __str__(self): 
+}
+```
+
+```plantuml
+@startuml
+top to bottom direction
+skinparam linetype ortho
+
+package DD_CONSTANTS as "Data Dictionary Constants"  {
+    note as N1
+      Data Dictionary constants
+      used for processing
+    end note
+
+    class ENTITIES_SOURCES {
+    .. Properties ..
+      source_file_name: <source folder>
+      source_worksheet_name: 'OMS.SalesOrder_IBv4.0'
+      entity_name: "OMS_SALES_ORDER"
+      subject_area: "Transaction: Order Management"
+      description: "OMS Sales Order entity"
+      environment: "Data Generation"
+    .. Objects ..
+      attribute_column_mapping: [attribute_column_mapping]
+    }
+    class attribute_column_mapping {
+    .. Objects ..
+      name: <Attribute Field Name>
+      data_type: <Attribute Field Type>
+      required: "Y/N"
+      description: "Transaction: Order Management"
+      max_length: "OMS Sales Order entity"
+      mask: "Data Generation"
+    }
+    ENTITIES_SOURCES "1" *-- "many" attribute_column_mapping: Array of \n attribute mappings
+}
+
+
+
+title DataDictionary Class Diagram
+class Attribute as "model.DataDictionary.Attribute" {
+   .. Class Attributes ..
+   + subject_area: str 
+   + environment: str 
+   + key_types: str 
+   + name: str 
+   + data_type: str 
+   + description: str 
+   - _attribute_name: str
+   + required: str = "Y"
+   + mask: str 
+   + max_length: int 
+   .. Class Methods ..
+   __init__(): 
+   to_dict(self): 
+   attribute_from_dict(cls, attribute_dict: dict): 
+}
+note right of Attribute::"attribute_from_dict(cls, attribute_dict: dict)"
+This creates an attribute
+from a Python dictionary object
+end note
+
+class DataDictionary as "model.DataDictionary.DataDictionary" {
+   subject_area: 
+   environment: 
+   entity_count: 
+   entities: 
+   source_files: 
+   name: 
+   description: 
+   _data_dictionary_registry: 
+   __init__(): 
+   create_data_dictionary_from_json(cls, data_dictionary_source_file: Path): 
+   add_source_file(self, source_file: Path): 
+   add_entity(self, entity: Entity): 
+   write_data_dictionary(self, out_filename: Path): 
+   create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False): 
+   is_empty_dir(path): 
+   get_entities(self): 
+   get_entity(self, entity_name: str): 
+   __str__(self): 
+}
+
+class Entity as "model.DataDictionary.Entity" {
+   subject_area: 
+   environment: 
+   attribute_count: 
+   _entity_id: 
+   name: 
+   description: 
+   attributes: 
+   __init__(): 
+   __str__(self): 
+   to_json(self): 
+   to_dict(self): 
+   entity_from_dict(cls, entity_dict: dict): 
+   entity_from_json(cls, entity_json_string: str): 
+   add_attribute(self, attribute: Attribute): 
+   get_entity(self): 
+   get_entity_id(self): 
+}
+DataDictionary *-- Entity
+Entity *-- Attribute
+
+
+@enduml
+```
+
+```plantuml
+@startuml
+title DataDictionary Class Diagram
+'
+'class DataDictionary {
+'    .. Fields ..
+''- PrivateField: Type { arg1, arg2, argn }
+'+ PublicField: Type
+'# ProtectedField: Type
+'~ PackagePrivateField: Type
+'
+'  .. Method Examples ..
+'-PrivateMethod(): Type
+'+PublicMethod(): Type
+'#ProtectedMethod(): Type
+'~PackagePrivateMethod(): Type
+'
+'  .. Static Example ..
+'+{static} StaticMethod(): Type
+'+{static} StaticField: Type
+'
+'  .. Abstract Example ..
+'+{abstract} AbstractMethod(): Type
+'
+'}
+'
+'note right of ConcreteCommand::execute()
+'The execute method invokes the action(s)
+'on the receiver needed to fulfill the
+'request;
+'
+'""public void execute() {""
+'"" receiver.action()""
+'""}""
+'
+'end note
+
+top to bottom direction
+skinparam linetype ortho
+
+class Attribute as "model.DataDictionary.Attribute" {
+   .. Class Attributes ..
+   + subject_area: str 
+   + environment: str 
+   + key_types: str 
+   + name: str 
+   + data_type: str 
+   + description: str 
+   - _attribute_name: str
+   + required: str = "Y"
+   + mask: str 
+   + max_length: int 
+   .. Class Methods ..
+   __init__(): 
+   to_dict(self): 
+   attribute_from_dict(cls, attribute_dict: dict): 
+}
+class DataDictionary as "model.DataDictionary.DataDictionary" {
+   subject_area: 
+   environment: 
+   entity_count: 
+   entities: 
+   source_files: 
+   name: 
+   description: 
+   _data_dictionary_registry: 
+   __init__(
+            self,
+            name: str,
+            description: str,
+            subject_area: str,
+            environment: str,
+            source_filename: Path = None,
+            entities: list[Entity] = None
+    ): 
+   create_data_dictionary_from_json(cls, data_dictionary_source_file: Path): 
+   add_source_file(self, source_file: Path): 
+   add_entity(self, entity: Entity): 
+   write_data_dictionary(self, out_filename: Path): 
+   create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False): 
+   is_empty_dir(path): 
+   get_entities(self): 
+   get_entity(self, entity_name: str): 
+   __str__(self): 
+}
+
+class Entity as "model.DataDictionary.Entity" {
+   subject_area: 
+   environment: 
+   attribute_count: 
+   _entity_id: 
+   name: 
+   description: 
+   attributes: 
+   __init__(
+            self,
+            name: str,
+            description: str,
+            subject_area: str,
+            environment: str,
+            attributes: list[Attribute] = None
+    ): 
+   __str__(self): 
+   to_json(self): 
+   to_dict(self): 
+   entity_from_dict(cls, entity_dict: dict): 
+   entity_from_json(cls, entity_json_string: str): 
+   add_attribute(self, attribute: Attribute): 
+   get_entity(self): 
+   get_entity_id(self): 
+}
+DataDictionary *-- Attribute
+
+@enduml
+```
 
 ```plantuml
 @startjson
@@ -784,7 +1208,6 @@ Contains a complete data dictionary including a description as well as an array 
          "SUBJECT_AREA": "Subject Area for Dictionary (e.g. OMS, etc.)",
          "ENVIRONMENT": "<Production, Test, QA, etc. if applicable>",
          "ATTRIBUTES": [
-         [
              {
                "ATTRIBUTE_NAME": "<Name for Attribute/Column>",
                "DESCRIPTION": "<Description for the Data Dictionary>",
@@ -792,16 +1215,11 @@ Contains a complete data dictionary including a description as well as an array 
                "MAX_LENGTH": "<Int for Max length>",
                "MASK": "<Mask for element, if applicable>",
                "KEYS": ["PK/FK","PK/FK"],
-               "PARENT_ENTITY_ATTRIBUTE": [
-               {
-               "PARENT_ENTITY_NAME": "<Name for Entity/Table>",
-               "PARENT_ATTRIBUTE_NAME": "<Parent Attribute/Column Name>"
-               },
-               {
-               "PARENT_ENTITY_NAME": "<Name for Entity/Table>",
-               "PARENT_ATTRIBUTE_NAME": "<Description for the Data Dictionary>"
-               }
-               ]
+               "PARENT_ENTITY": <Parent Entity>,
+               "PARENT_ATTRIBUTE": <Parent Attribute>,
+               "PARENT_RETURN_ATTRIBUTE": <Parent Attribute to be Returned>,
+               "JOIN_CRITERIA": <Join Criteria (if any) used when looking up Parent return Attribute)>,
+               "FILTER_CRITERIA": <Any filter criteria used when lookup up Parent return Attribute>
              },
              {
                "ATTRIBUTE_NAME": "<Name for Attribute/Column>",
@@ -810,30 +1228,48 @@ Contains a complete data dictionary including a description as well as an array 
                "MAX_LENGTH": "<Int for Max length>",
                "MASK": "<Mask for element, if applicable>",
                "KEYS": ["PK/FK","PK/FK"],
-               "PARENT_ENTITY_ATTRIBUTE": [
-               {
-         "ENTITY_NAME": "<Name for Entity/Table>",
-         "DESCRIPTION": "<Description for the Data Dictionary>",
-         "SUBJECT_AREA": "Subject Area for Dictionary (e.g. OMS, etc.)",
-         "ENVIRONMENT": "<Production, Test, QA, etc. if applicable>"
-       },
-       {
-         "ENTITY_NAME": "<Name for Entity/Table>",
-         "DESCRIPTION": "<Description for the Data Dictionary>",
-         "SUBJECT_AREA": "Subject Area for Dictionary (e.g. OMS, etc.)",
-         "ENVIRONMENT": "<Production, Test, QA, etc. if applicable>"
-       }]
+               "PARENT_ENTITY": <Parent Entity>,
+               "PARENT_ATTRIBUTE": <Parent Attribute>,
+               "PARENT_RETURN_ATTRIBUTE": <Parent Attribute to be Returned>,
+               "JOIN_CRITERIA": <Join Criteria (if any) used when looking up Parent return Attribute)>,
+               "FILTER_CRITERIA": <Any filter criteria used when lookup up Parent return Attribute>
              }
-          ]  
          ]
        },
        {
          "ENTITY_NAME": "<Name for Entity/Table>",
          "DESCRIPTION": "<Description for the Data Dictionary>",
          "SUBJECT_AREA": "Subject Area for Dictionary (e.g. OMS, etc.)",
-         "ENVIRONMENT": "<Production, Test, QA, etc. if applicable>"
+         "ENVIRONMENT": "<Production, Test, QA, etc. if applicable>",
+         "ATTRIBUTES": [
+             {
+               "ATTRIBUTE_NAME": "<Name for Attribute/Column>",
+               "DESCRIPTION": "<Description for the Data Dictionary>",
+               "DATA_TYPE": "<Int, String, etc.>",
+               "MAX_LENGTH": "<Int for Max length>",
+               "MASK": "<Mask for element, if applicable>",
+               "KEYS": ["PK/FK","PK/FK"],
+               "PARENT_ENTITY": <Parent Entity>,
+               "PARENT_ATTRIBUTE": <Parent Attribute>,
+               "PARENT_RETURN_ATTRIBUTE": <Parent Attribute to be Returned>,
+               "JOIN_CRITERIA": <Join Criteria (if any) used when looking up Parent return Attribute)>,
+               "FILTER_CRITERIA": <Any filter criteria used when lookup up Parent return Attribute>
+             },
+             {
+               "ATTRIBUTE_NAME": "<Name for Attribute/Column>",
+               "DESCRIPTION": "<Description for the Data Dictionary>",
+               "DATA_TYPE": "<Int, String, etc.>",
+               "MAX_LENGTH": "<Int for Max length>",
+               "MASK": "<Mask for element, if applicable>",
+               "KEYS": ["PK/FK","PK/FK"],
+               "PARENT_ENTITY": <Parent Entity>,
+               "PARENT_ATTRIBUTE": <Parent Attribute>,
+               "PARENT_RETURN_ATTRIBUTE": <Parent Attribute to be Returned>,
+               "JOIN_CRITERIA": <Join Criteria (if any) used when looking up Parent return Attribute)>,
+               "FILTER_CRITERIA": <Any filter criteria used when lookup up Parent return Attribute>
+             }
+         ]
        }
-    ]  
 }
 @endjson
 
@@ -858,6 +1294,7 @@ Contains a complete data dictionary including a description as well as an array 
 * write_data_dictionary(self): This method is intended to write the data dictionary's content to an output file. The
   out_filename parameter specifies the path where the file should be saved. The specific details about how the data is
   formatted and written are defined within the method.
+* create_data_dictionary_from_json(data_dictionary_source_file: Path): Creates an instance of a DataDictionary object from a JSON file.  
 
 ### Class - Entity
 
@@ -1031,6 +1468,34 @@ and organized way to work with Excel data.
    array.
 5. Make updates to the index.rst file to include the Python resources to generate documentation for.
 
+Add or update information about a Trade Item
+
+Requirement	Specification
+Required Interfaces	SCC.Item_IB – Adds or updates information for a Trade Item
+SCC.ItemMapping_IB – Adds or updates how Trade Items are mapped to the SCCT Product Catalog Generic Item
+SCC.ItemSubstitution_IB – Adds or updates information regarding valid item substitutions that are related to the Trade Item
+SCC.AttribSet_IB – Adds or updates mapping information for custom attributes related to the Trade Item (if applicable)
+SCC.Bill of Material  – Adds or updates information about Trade Items that have Bill of Material or Kit components (if applicable)
+Filenames	scc/item_ib_[timestamp].csv
+scc/itemmapping_ib_[timestamp].csv
+scc/itemsubstitution_ib_[timestamp].csv
+scc/attribset_ib_[timestamp].csv
+scc/billofmaterials_ib_[timestamp].csv
+Dependencies	The SCCT Generic Item. If you believe your Trade Item should be associated with an SCCT Generic Item that is not listed, please contact the SCCT Project Team.
+
+Requisition Orders
+6.4.1 Add or update Requisition Orders
+As a NextGen-PSA, USAID requires comprehensive information about Requisition Orders— including attributes such as agreed delivery date, list of Trade Items (with pack sizes, quantities, and prices), and ship-from & ship-to destination—to be available in the SCCT.
+Requirement	Specification
+Required Interfaces	OMS.SalesOrder_IB – Adds or updates information for a Requisition Order
+Filename	oms/salesorder_ib_[timestamp].csv 
+Dependencies	The SCCT Vendor for your supplier (if applicable ). 
+The SCCT Customer for your customer.
+The SCCT Site for your ship-from source (Vendor).
+The SCCT Site for your ship-to destination (Customer or Partner). 
+The applicable Trade Items have been created in the SCCT. 
+
+
 ```mermaid
 ---
 title: Master Data - Organization
@@ -1052,6 +1517,9 @@ erDiagram
         int SYS_ENT_ID
         string APPT_SCHEDULING_SYSTEM
     }
+    SITE {
+        
+    }
 ```
 
 ```plantuml
@@ -1071,3 +1539,11 @@ on two lines
 /LICENSE
 @endfiles
 ```
+
+The [extract_data_dictionary_information](./data_dictionary/extract_data_dictionary_information.py) script is used to
+extract details from spreadsheets, documents, files, etc. The output of this script includes a dictionary/JSON data
+structures that can be then used to extract other data dictionary related information.
+The below are the high level steps this script performs:
+
+1. Read in JSON/Dictionary that identifies sources of Data Dictionary information.
+2. Each source of Data Dictionary information identifies the worksheet and which Entity it defines.

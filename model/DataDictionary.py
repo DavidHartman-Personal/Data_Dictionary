@@ -12,6 +12,8 @@ The information captured for the data includes details regarding format, relatio
     Methods
     -------
 
+    TODO: Add logic to split keys on comma in Attribute
+
 """
 from __future__ import annotations
 
@@ -42,7 +44,6 @@ sys.path.insert(0, PROJECT_ROOT_DIR)
 #: Directory that contains configuration files
 CONF_DIR = os.path.join(PROJECT_ROOT_DIR, 'conf')
 
-
 # import any functions inside or outside of this module.  If no helpers are needed it can be removed from here
 # as well as remove the file from the excel_workbook module.
 # from . import helpers
@@ -63,6 +64,112 @@ def json_serial(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     raise TypeError("Type %s not serializable" % type(obj))
+
+
+class Constraint:
+    """An Attribute contains details about a data attribute/column including data type information.
+
+    An Attribute contains details about a data attribute typically associated with entities.  The information generally includes details
+    related to data type, masks and relationships to other data elements (e.g. parent-child, pk, fk, etc.).
+
+    Args:
+        name (str): A name for the data attribute.
+        description (str): A description for the data attribute.
+        subject_area (str): A subject area or type of data.  This includes master data, transactional data, configuration data, etc.
+        environment (str): A environment for the data attribute.
+
+    """
+
+    def __init__(
+            self,
+            name: str = "",
+            description: str = "",
+            subject_area: str = "",
+            environment: str = "",
+            parent_entity: str = "",
+            parent_attribute: str = "",
+            parent_return_attribute: str = "",
+            child_entity: str = "",
+            child_attribute: str = "",
+            join_criteria: str = "",
+            filter_criteria: str = "",
+            # key_types: list[str] = None,
+            # mask: str = "Y",
+            # required: str = "Y",
+            # parent_entity_attributes: list[(str, str)] = None,
+            # constraints: list[dict] = None
+    ) -> None:
+        # if len(name) == 0:
+        #     raise NameError("Attribute name is required")
+        self.name = name
+        self.description = description
+        self.subject_area = subject_area
+        self.environment = environment
+        self.parent_entity = parent_entity
+        self.parent_attribute = parent_attribute
+        self.parent_return_attribute = parent_return_attribute
+        self.child_entity = child_entity
+        self.child_attribute = child_attribute
+        self.join_criteria = join_criteria
+        self.filter_criteria = filter_criteria
+        # self.data_type = data_type
+        # self._attribute_id = str(name).upper()
+        # self.parent_entity_attributes = parent_entity_attributes
+        # if constraints is None:
+        #     self.constraints = list()
+        # else:
+        #     self.constraints = list(constraints)
+        # if len(parent_entity_attributes) != 0:
+        #     logging.info("Attribute contains foreign keys.  Checking that Entity and Attribute exist")
+
+    def to_dict(self):
+        # constraint_list = list()
+        # for constraint in self.constraints:
+        #     constraint_list.append(constraint)
+        constraint_dict = dict(NAME=self.name,
+                               DESCRIPTION=self.description,
+                               SUBJECT_AREA=self.subject_area,
+                               ENVIRONMENT=self.environment,
+                               PARENT_ENTITY=self.parent_entity,
+                               PARENT_ATTRIBUTE=self.parent_attribute,
+                               PARENT_RETURN_ATTRIBUTE=self.parent_return_attribute,
+                               CHILD_ENTITY=self.child_entity,
+                               CHILD_ATTRIBUTE=self.child_attribute,
+                               JOIN_CRITERIA=self.join_criteria,
+                               FILTER_CRITERIA=self.filter_criteria, )
+        return constraint_dict
+
+    def to_json(self):
+        entity_dict = dict(NAME=self.name,
+                           DESCRIPTION=self.description,
+                           SUBJECT_AREA=self.subject_area,
+                           ENVIRONMENT=self.environment)
+        return json.dumps(entity_dict, separators=(',', ': '))
+
+    @classmethod
+    def constraint_from_dict(cls, constraint_dict: dict) -> Constraint:
+        """Creates an instance of DataDictionary based on a dict containing an Attribute definition
+
+        Creates an instance of Entity from a dict containing Attribute details, including attributes.
+        TODO: Add check for keys in dictionary when creating an Attribute (i.e. confirm dict has ENTITY_NAME, etc.)
+
+        Args:
+             attribute_dict (dict): A dictionary containing an Attribute definition
+        Returns:
+             Attribute Class Object:
+        """
+        return cls(name=constraint_dict.get('ATTRIBUTE_NAME', "Required"),
+                   description=constraint_dict.get('DESCRIPTION', "Description"),
+                   subject_area=constraint_dict.get('SUBJECT_AREA', ""),
+                   environment=constraint_dict.get('ENVIRONMENT', ""),
+                   parent_entity=constraint_dict.get('PARENT_ENTITY', ""),
+                   parent_attribute=constraint_dict.get('PARENT_ATTRIBUTE', ""),
+                   parent_return_attribute=constraint_dict.get('PARENT_RETURN_ATTRIBUTE', ""),
+                   child_entity=constraint_dict.get('CHILD_ENTITY', ""),
+                   child_attribute=constraint_dict.get('CHILD_ATTRIBUTE', ""),
+                   join_criteria=constraint_dict.get('JOIN_CRITERIA', ""),
+                   filter_criteria=constraint_dict.get('FILTER_CRITERIA', "")
+                   )
 
 
 class Attribute:
@@ -90,6 +197,11 @@ class Attribute:
             key_types: list[str] = None,
             mask: str = "Y",
             required: str = "Y",
+            parent_entity: str = "",
+            parent_attribute: str = "",
+            parent_return_attribute: str = "",
+            join_criteria: str = "",
+            parent_filter_criteria: str = "",
             parent_entity_attributes: list[(str, str)] = None
     ) -> None:
         if len(name) == 0:
@@ -103,9 +215,12 @@ class Attribute:
         self.subject_area = subject_area
         self.environment = environment
         self.data_type = data_type
+        self.parent_entity = parent_entity
+        self.parent_attribute = parent_attribute
+        self.parent_return_attribute = parent_return_attribute
+        self.join_criteria = join_criteria,
+        self.parent_filter_criteria = parent_filter_criteria
         self._attribute_id = str(name).upper()
-        # if len(parent_entity_attributes) != 0:
-        #     logging.info("Attribute contains foreign keys.  Checking that Entity and Attribute exist")
 
     def to_dict(self):
         attribute_dict = dict(ATTRIBUTE_ID=self._attribute_id,
@@ -115,7 +230,12 @@ class Attribute:
                               ENVIRONMENT=self.environment,
                               DATA_TYPE=self.data_type,
                               MAX_LENGTH=self.max_length,
-                              REQUIRED=self.required)
+                              REQUIRED=self.required,
+                              PARENT_ENTITY=self.parent_entity,
+                              PARENT_ATTRIBUTE=self.parent_attribute,
+                              PARENT_RETURN_ATTRIBUTE=self.parent_return_attribute,
+                              JOIN_CRITERIA=self.join_criteria,
+                              PARENT_FILTER_CRITERIA=self.parent_filter_criteria)
         return attribute_dict
 
     @classmethod
@@ -139,7 +259,11 @@ class Attribute:
                    key_types=attribute_dict.get('KEY_TYPES', []),
                    required=attribute_dict.get('REQUIRED', ""),
                    mask=attribute_dict.get('MASK', ""),
-                   parent_entity_attributes=attribute_dict.get('PARENT_ENTITY_ATTRIBUTES', list()),
+                   parent_attribute=attribute_dict.get('PARENT_ATTRIBUTE', ""),
+                   parent_entity=attribute_dict.get('PARENT_ATTRIBUTE', ""),
+                   parent_return_attribute=attribute_dict.get('PARENT_RETURN_ATTRIBUTE', ""),
+                   join_criteria=attribute_dict.get('JOIN_CRITERIA', ""),
+                   parent_filter_criteria=attribute_dict.get('PARENT_FILTER_CRITERIA', ""),
                    )
 
 
@@ -279,13 +403,26 @@ class Entity:
         Args:
             attribute (Attribute): An attribute to add to the list of attributes.
         """
-        logging.info("Adding Attribute [%s] to Entity [%s] to list of source files for the dictionary...",
-                     str(attribute.name), str(self.name))
+        # logging.info("Adding Attribute [%s] to Entity [%s] to list of source files for the dictionary...",
+        #              str(attribute.name), str(self.name))
+        # Check if Attribute already exists
+        for attribute_entry in self.attributes:
+            if attribute_entry.name == attribute.name:
+                logging.warning("Attribute already added to Entity: [%s]", attribute.name)
+                raise NameError("Attribute already exists [%s]", attribute.name)
         self.attributes.append(attribute)
 
     def get_entity(self):
         logging.info("Getting Entity")
         return self.name
+
+    def get_attribute(self, attribute_name: str):
+        logging.info("Getting Entity Attribute")
+        for attribute_in_entity in self.attributes:
+            if attribute_in_entity.name == attribute_name:
+                logging.info("Found attribute in list of entities [%s]", str(attribute_name))
+                return attribute_in_entity
+        return None
 
     def get_entity_id(self) -> str:
         logging.info("Getting Entity id for [%s]", self.name)
@@ -321,7 +458,12 @@ class DataDictionary:
 
     """
 
-    _data_dictionary_registry = {}
+    # Create entry for every Entity created and added to DataDictionary
+    # _data_dictionary_registry = {
+    #     'entities': []
+    # }
+
+    _data_dictionary_registry = []
 
     def __init__(
             self,
@@ -365,6 +507,9 @@ class DataDictionary:
         """Creates an instance of DataDictionary based on a JSON File
 
         Creates an instance of DataDictionary based on a JSON File.  This includes creating Entity and Attribute objects.
+        The function opens a JSON file containing a DataDictionary and then loops through each Entity entry.  For each
+        Entity in the list, an Entity object is created based on a dict object and then added to a list of entities.
+        The list of Entity objects is included when creating a new DataDictionary object.
 
         Args:
             data_dictionary_source_file (Path): The file system path to the Data Dictionary JSON File
@@ -406,7 +551,13 @@ class DataDictionary:
             entity (Entity): The Entity to be added to the data dictionary
         """
         logging.info("Adding Entity to dictionary [%s] to list of source files for the dictionary...", str(entity))
+        # Check if Entity already exists in class registery
         # _data_dictionary_registry = dict()
+        DataDictionary._data_dictionary_registry.append(entity.name)
+        for entity_entry in self.entities:
+            if entity_entry.name == entity.name:
+                logging.warning("Entity already added to DataDictionary: [%s]", entity.name)
+                raise NameError("Attribute already exists [%s]", entity.name)
         self.entities.append(entity)
 
     def write_data_dictionary(self, out_filename: Path) -> None:
@@ -436,6 +587,33 @@ class DataDictionary:
         # print(str(json_formatted_str))
         with open(out_filename, 'w') as json_out_handle:
             json.dump(out_dictionary, json_out_handle, indent=2, default=json_serial, separators=(',', ': '))
+
+    def print_data_dictionary(self, print_format: str = "JSON") -> None:
+        """Writes contents of full data dictionary to an JSON formatted file
+
+        This includes writing Entities and Attributes into a JSON formatted file.
+
+        Args:
+            print_format (str): (Default = "JSON") Output format to print data dictionary
+        TODO: Add optional parameter to print only certain entities
+
+        """
+        logging.info("[%s] Printing data dictionary in [%s] format...", str(__name__), str(print_format))
+        # build list of source files
+        dd_source_files = list()
+        for source_file in self.source_files:
+            dd_source_files.append(str(source_file))
+        entities_list = list()
+        for entity in self.entities:
+            entities_list.append(entity.to_dict())
+        out_dictionary = dict(DICTIONARY_NAME=self.name,
+                              DESCRIPTION=self.description,
+                              DATE_GENERATED=datetime.now(),
+                              ENVIRONMENT=self.environment,
+                              SOURCE_FILES=dd_source_files,
+                              ENTITIES=entities_list)
+        json_formatted_str = json.dumps(out_dictionary, default=json_serial, indent=2, separators=(',', ': '))
+        print(str(json_formatted_str))
 
     def create_markdown_files(self, markdown_output_dir: Path, force_overwrite: bool = False) -> None:
         """Creates a hierarchy of markdown formatted files based on the contents in the data dictionary
@@ -477,7 +655,7 @@ class DataDictionary:
         details_expand_text += "</details>\n\n"
         md_file.write(details_expand_text)
         for entity in self.entities:
-            header_title=Header.header_anchor(entity.name)
+            header_title = Header.header_anchor(entity.name)
             md_file.new_header(level=2, title=header_title)
             md_file.write("Description:", bold_italics_code='b', color="green")
             md_file.write(" " + entity.description)
@@ -489,7 +667,7 @@ class DataDictionary:
             md_file.write(" " + entity.environment)
             md_file.new_line()
             attribute_rows = list(constants.MARKDOWN_ATTRIBUTE_HEADER_ROW)
-            attribute_row_count = len(entity.attributes)+1
+            attribute_row_count = len(entity.attributes) + 1
             for attribute in entity.attributes:
                 logging.info("Adding Attribute to Markdown file:[%s]", attribute.name)
                 attribute_rows.extend([attribute.name,
@@ -506,11 +684,11 @@ class DataDictionary:
             # print(str(attribute_rows))
             # print("length of attribute_rows:" + str(len(attribute_rows)))
             # print(str(attribute_row_count))
-            md_file.new_table(columns=len(constants.MARKDOWN_ATTRIBUTE_HEADER_ROW), rows=attribute_row_count, text=attribute_rows, text_align='left')
-
+            md_file.new_table(columns=len(constants.MARKDOWN_ATTRIBUTE_HEADER_ROW), rows=attribute_row_count,
+                              text=attribute_rows, text_align='left')
 
         # add_paragraph(md_file, "Adding text")
-        #md_file.new_table_of_contents(table_title='Contents', depth=2)
+        # md_file.new_table_of_contents(table_title='Contents', depth=2)
         md_file.create_md_file()
         # TODO: After writing markdown file, go through and remove extra blank lines after headers.  See below
         # # Post-process to remove extra blank lines
@@ -567,6 +745,10 @@ class DataDictionary:
         # if no entity found, for loop exits
         logging.warning("Entity not found in list of entities [%s]", str(entity_name))
         return None
+
+    @classmethod
+    def check_if_entity_registered(cls, entity: str):
+        return True
 
     def __str__(self):
         return_str = ""

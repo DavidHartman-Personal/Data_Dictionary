@@ -3,6 +3,8 @@
 This script data from an Excel workbook to create a data dictionary object.
 
 TODO: Add function to confirm which row contains the headers for the Entity/Attributes.
+TODO: Check for valid Excel worksheet
+TODO: Include ability to include references (including hyperlinks) when defining an Entity.
 
 """
 
@@ -95,31 +97,70 @@ def create_data_dictionary_from_config_data():
                                   subject_area="All",
                                   environment="All"
                                   )
+    output_file_name: str = "data_dictionary.json"
+    dd_output_file = constants.OUTPUT_FOLDER / output_file_name
+    entity_constraints = {}
     for entity in constants.ENTITIES_SOURCES:
         logging.info("entities source definition: [%s] excel file/worksheet: [%s] - [%s]",
                      str(entity['entity_name']),
                      entity['source_file_name'],
                      entity['source_worksheet_name'])
         new_entity = dd.Entity(name=entity['entity_name'],
-                           description=entity['description'],
-                           subject_area=entity['subject_area'],
-                           environment=entity['environment']
-                           )
+                               description=entity['description'],
+                               subject_area=entity['subject_area'],
+                               environment=entity['environment']
+                               )
         excel_poib_data = pd.read_excel(entity['source_file_name'],
                                         sheet_name=entity['source_worksheet_name']).replace(np.nan, None)
+        # logging.info("Columns:[%s]", str(list(excel_poib_data.columns.values)))
+        entity_constraints[entity['entity_name']] = dict(entity=entity['entity_name'],
+                                                         constraints=[])
         for row_label, row in excel_poib_data.iterrows():
-            logging.info("Row label: [%s] Row values: [%s]", str(row_label), str(row))
-            # entity_attribute = dd.Attribute(
-            #     name=entity['attribute_column_mapping']['name'],
-            #     description=entity['attribute_column_mapping']['description'],
-            #     data_type=entity['attribute_column_mapping']['data_type'],
-            #     subject_area=entity['subject_area'],
-            #     environment=entity['environment'],
-            #     max_length=entity['attribute_column_mapping']['max_length']
-            # )
-            # entity.add_attribute(entity_attribute)
-        # print entity defined and excel worksheet source for entity/attribute definitions
-        # create_entities_from_excel_worksheet(entity['source_file_name'], data_dict)
+            # logging.info("Row label: [%s]", str(row_label))
+            logging.info("Row label: [%s] Row values: [%s]", str(row_label),
+                         str(row[entity['attribute_column_mapping']['description']]))
+            entity_attribute = dd.Attribute(
+                name=row[entity['attribute_column_mapping']['name']],
+                description=row[entity['attribute_column_mapping']['description']],
+                data_type=row[entity['attribute_column_mapping']['data_type']],
+                subject_area=entity['subject_area'],
+                environment=entity['environment'],
+                key_types=row['Key'],
+                parent_entity=row['Parent Entity'],
+                parent_attribute=row['Parent Attribute'],
+                parent_return_attribute=row['Parent Return Attribute'],
+                join_criteria=row['Join Criteria'],
+                parent_filter_criteria=row['Parent Filter Criteria'],
+                max_length=row[entity['attribute_column_mapping']['max_length']]
+            )
+            # Extract any RI/Constraints logic and save for later processing
+            logging.info("Parent Entity: [%s]", str(row['Parent Entity']))
+            # constraint=dict(entity_with_constraint=row[entity['attribute_column_mapping']['name']],
+            #                 attribute_with_constraint=row[entity['attribute_column_mapping']['name']],
+            #                 parent_entity=row['Parent Entity'],
+            #                 parent_attribute=row['Parent Attribute'],
+            #                 parent_return_attribute=row['Parent Return Attribute'],
+            #                 join_criteria=row['Join Criteria'],
+            #                 parent_filter_criteria=row['Parent Filter Criteria'])
+            # logging.info("Constraint: %s", str(constraint))
+            # entity_constraints[entity['entity_name']]['constraints'].append(constraint)
+
+            new_entity.add_attribute(entity_attribute)
+        data_dict.add_entity(new_entity)
+    # Now add constraints to Entity added
+    # for entity_to_add_constraint in entity_constraints.keys():
+    #     logging.info("Adding constraints for Entity: %s", str(entity_to_add_constraint))
+    #     for entity_constraint_entry in entity_constraints[entity_to_add_constraint]:
+    #         # logging.info("Adding constraint: [%s]", str(entity_constraints[entity_to_add_constraint]['constraints']))
+    #         for constraint_to_add_to_entity in entity_constraints[entity_to_add_constraint]['constraints']:
+    #             if constraint_to_add_to_entity['parent_entity'] is not None:
+    #                 logging.info("parent entity: %s constraint to add: %s", str(constraint_to_add_to_entity['entity_with_constraint']),
+    #                              str(constraint_to_add_to_entity))
+    #                 data_dict.get_entity(entity_to_add_constraint).add_constraint(name=constraint_to_add_to_entity['parent_entity'],
+    #                                                                               parent_entity=constraint_to_add_to_entity['parent_entity'],
+    #                                                                               parent_attribute=constraint_to_add_to_entity['parent_attribute'])
+    data_dict.write_data_dictionary(dd_output_file)
+    data_dict.create_markdown_files(constants.MARKDOWN_FILE_DIR, force_overwrite=True)
 
 
 def main():
