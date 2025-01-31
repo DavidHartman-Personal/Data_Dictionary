@@ -822,12 +822,3 @@ class DataDictionarySourceSpreadsheet:
             logging.error("Could not print string for object [%s]", str(e))
         return return_str
 
-# if len(str(source_filename)) > 0:
-#     # If the list of source files already exists, add to it, otherwise create the list
-#     if source_filename.is_file():
-#         self.source_files = list[source_filename]
-#     else:
-#         logging.error("Source file is not a valid file reference: [%s]", str(source_filename))
-#         raise NameError(source_filename)
-# else:
-#     logging.info("Source file not provided")
